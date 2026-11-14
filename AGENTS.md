@@ -8,7 +8,7 @@ The official content pack of [agent-ready-setup](https://github.com/guidomodarel
 - `profiles/<name>/` — capabilities such as `software-development` (with `agents-skeleton.md`) and `business-flows`.
 - `scripts/` — the checks of the pack (`check_pack.py`) and its release (`release.py`); `tests/` tests them.
 
-A repository consumes this pack with `sources.golfoKit.source` in its `.agents/agent-ready.json`. The format is the one of `references/profiles-and-lockfile.md` of agent-ready-setup, section «Contenido de otro repositorio».
+This pack is the default content source of agent-ready-setup (`sources.golfo` in a repository's `.agents/agent-ready.json`, golfo-kit 0.90.0 or newer). The format is the one of `references/profiles-and-lockfile.md` of agent-ready-setup, section «El contenido».
 
 ## Mandatory Rules
 
@@ -32,7 +32,7 @@ python3 scripts/check_pack.py --base origin/main \
   --engine ../golfo-marketplace/plugins/golfo-kit/skills/agent-ready-setup
 ```
 
-The projection applies each profile in an empty repository of its own that takes the committed content of `HEAD` through `sources.golfoKit.source`, with a fake HOME and fake provider CLIs: it never starts a real agent. Commit before running it; uncommitted changes are not checked.
+The projection applies each profile in an empty repository of its own that takes the committed content of `HEAD` through `sources.golfo`, with a fake HOME and fake provider CLIs: it never starts a real agent. Commit before running it; uncommitted changes are not checked.
 
 ## Conventions
 
