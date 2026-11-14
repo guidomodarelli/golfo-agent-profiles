@@ -256,7 +256,8 @@ def apply_problems(engine_dir, pack_dir, catalog, console):
     commit = run_git(pack_dir, ["rev-parse", "HEAD"]).strip()
     if run_git(pack_dir, ["status", "--porcelain", "--"] + list(CONTENT_PATHS)).strip():
         console.state(STATE_WARNING, f"uncommitted changes to the content are not checked: the engine reads commit {commit[:12]}")
-    cli = os.path.join(engine_dir, ENGINE_CLI_RELATIVE_PATH)
+    # Absolute: each apply runs from its own temporary repository.
+    cli = os.path.abspath(os.path.join(engine_dir, ENGINE_CLI_RELATIVE_PATH))
     if not os.path.isfile(cli):
         raise CheckError(f"check_pack: {cli} is not the agent-ready CLI; --engine must point to the agent-ready-setup skill")
     problems = []

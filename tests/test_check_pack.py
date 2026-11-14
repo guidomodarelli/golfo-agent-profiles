@@ -149,6 +149,22 @@ class ConsoleTest(unittest.TestCase):
         self.assertFalse(console_output.supports_color(TerminalStream(), {"TERM": "dumb"}))
 
 
+class ApplyProblemsTest(unittest.TestCase):
+    def test_a_relative_engine_path_works_from_the_temporary_repositories(self):
+        root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, root)
+        # An engine whose CLI only succeeds: what is checked is that it is found.
+        os.makedirs(os.path.join(root, "engine", "scripts"))
+        with open(os.path.join(root, "engine", "scripts", "agent-ready"), "w", encoding="utf-8") as file_handle:
+            file_handle.write("import sys\nsys.exit(0)\n")
+        previous = os.getcwd()
+        os.chdir(root)
+        self.addCleanup(os.chdir, previous)
+        console = console_output.Console(stream=io.StringIO())
+        problems = check_pack.apply_problems("engine", PACK_ROOT, {"profiles": {"node": {}}}, console)
+        self.assertEqual(problems, [])
+
+
 class MainTest(unittest.TestCase):
     def test_a_pack_with_a_broken_skill_exits_with_one(self):
         root = tempfile.mkdtemp()
