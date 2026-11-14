@@ -64,16 +64,8 @@ class SkillProblemsTest(unittest.TestCase):
         self.assertIn("more than 1024", check_pack.skill_problems(self.root)[0])
 
     def test_a_skill_without_evals_is_listed(self):
-        write_skill(self.root, "stacks/react/skills/karpathy-guidelines", "---
-name: karpathy-guidelines
-description: d
----
-")
-        write_skill(self.root, "stacks/react/skills/component-creation", "---
-name: component-creation
-description: d
----
-")
+        write_skill(self.root, "stacks/react/skills/karpathy-guidelines", "---\nname: karpathy-guidelines\ndescription: d\n---\n")
+        write_skill(self.root, "stacks/react/skills/component-creation", "---\nname: component-creation\ndescription: d\n---\n")
         os.makedirs(os.path.join(self.root, "stacks", "react", "skills", "component-creation", "evals"))
         open(os.path.join(self.root, "stacks", "react", "skills", "component-creation", "evals", "eval-config.json"), "w").close()
         self.assertEqual(check_pack.skills_without_evals(self.root), ["stacks/react/skills/karpathy-guidelines"])
