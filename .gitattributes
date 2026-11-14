@@ -1,0 +1,12 @@
+# El contenido se proyecta y se compara byte a byte (sha256 en el lock): siempre LF,
+# aunque quien clone tenga core.autocrlf=true (Windows).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.zip binary
