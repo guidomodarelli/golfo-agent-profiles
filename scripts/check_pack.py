@@ -26,6 +26,7 @@ PACK_SCHEMA_VERSION = 1
 # Where the content lives: what a change to the content touches.
 CONTENT_PATHS = ("base/", "stacks/", "profiles/", PACK_CATALOG_FILE_NAME)
 SKILL_FILE_NAME = "SKILL.md"
+EVAL_CONFIG_RELATIVE_PATH = os.path.join("evals", "eval-config.json")
 SKILLS_DIRECTORY_NAME = "skills"
 # Agent Skills specification: https://agentskills.io/specification
 SKILL_NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -145,6 +146,12 @@ def skill_problems(pack_dir):
         elif len(description) > MAX_SKILL_DESCRIPTION_LENGTH:
             problems.append(f"{relative}: description has {len(description)} characters, more than {MAX_SKILL_DESCRIPTION_LENGTH}")
     return problems
+
+
+def skills_without_evals(pack_dir):
+    """The skills that have no evals/eval-config.json yet: a warning, since some came from golfo-kit that way."""
+    return [os.path.relpath(os.path.dirname(path), pack_dir).replace(os.sep, "/") for path in skill_files(pack_dir)
+            if not os.path.isfile(os.path.join(os.path.dirname(path), EVAL_CONFIG_RELATIVE_PATH))]
 
 
 def run_git(pack_dir, arguments):
@@ -288,6 +295,8 @@ def main(argv=None, console=None):
         found = skill_problems(arguments.pack)
         report(console, found)
         problems += found
+        for skill in skills_without_evals(arguments.pack):
+            console.state(STATE_WARNING, f"{skill} has no {EVAL_CONFIG_RELATIVE_PATH.replace(os.sep, '/')} yet; add it when the skill changes")
         console.step(3, total, "Version")
         if arguments.base:
             changed, base_catalog = changed_since(arguments.pack, arguments.base)

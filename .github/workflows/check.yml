@@ -10,7 +10,8 @@ permissions:
 
 concurrency:
   group: check-${{ github.ref }}
-  cancel-in-progress: true
+  # A push to main is never cancelled: its release must run once its checks pass.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   pack:
@@ -45,3 +46,23 @@ jobs:
             arguments+=(--base "$BASE_REF")
           fi
           python3 scripts/check_pack.py "${arguments[@]}"
+
+  # Only a commit of main whose checks passed publishes its version: a tag never moves, so a broken
+  # one would stay for every consumer that pins it.
+  release:
+    name: Tag and release the version
+    needs: pack
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Publish v<version> of agent-ready-pack.json once
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/release.py
