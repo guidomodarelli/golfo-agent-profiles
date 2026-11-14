@@ -34,6 +34,9 @@ MAX_SKILL_NAME_LENGTH = 64
 MAX_SKILL_DESCRIPTION_LENGTH = 1024
 FRONTMATTER_DELIMITER = "---"
 BLOCK_SCALAR_INDICATORS = (">", ">-", ">+", "|", "|-", "|+")
+QUOTES = "\"'"
+# In a plain YAML scalar, a colon followed by a space starts a mapping.
+MAPPING_INDICATOR = ": "
 SEMVER_PATTERN = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 # The repository the consumers declare; the check reaches this checkout at that URL.
 PACK_URL = "https://github.com/guidomodarelli/golfo-agent-profiles"
@@ -108,13 +111,28 @@ def frontmatter_fields(text):
         if value in BLOCK_SCALAR_INDICATORS:
             current_key = key.strip()
             continue
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in QUOTES:
             value = value[1:-1]
         fields[key.strip()] = value
     else:
         return None
     if current_key:
         fields[current_key] = " ".join(part for part in block_lines if part)
+    return fields
+
+
+def unquoted_mapping_fields(text):
+    """Top-level fields whose plain value has ``: `` (or ends in ``:``), which YAML reads as a mapping, not a string."""
+    fields = []
+    for line in text.splitlines()[1:]:
+        if line.strip() == FRONTMATTER_DELIMITER:
+            break
+        key, separator, value = line.partition(":")
+        value = value.strip()
+        if not separator or line.startswith(" ") or not value or value[0] in QUOTES or value in BLOCK_SCALAR_INDICATORS:
+            continue
+        if MAPPING_INDICATOR in value or value.endswith(":"):
+            fields.append(key.strip())
     return fields
 
 
@@ -131,10 +149,13 @@ def skill_problems(pack_dir):
     for path in skill_files(pack_dir):
         relative = os.path.relpath(path, pack_dir).replace(os.sep, "/")
         with open(path, encoding="utf-8") as file_handle:
-            fields = frontmatter_fields(file_handle.read())
+            text = file_handle.read()
+        fields = frontmatter_fields(text)
         if fields is None:
             problems.append(f"{relative}: has no frontmatter between --- lines")
             continue
+        for key in unquoted_mapping_fields(text):
+            problems.append(f"{relative}: {key} has ': ' without quotes, which YAML does not read as text; quote the value")
         name, description = fields.get("name", ""), fields.get("description", "")
         directory = os.path.basename(os.path.dirname(path))
         if not SKILL_NAME_PATTERN.fullmatch(name) or len(name) > MAX_SKILL_NAME_LENGTH:

@@ -63,6 +63,13 @@ class SkillProblemsTest(unittest.TestCase):
         write_skill(self.root, "base/skills/agent-browser", f"---\nname: agent-browser\ndescription: {long_description}\n---\n")
         self.assertIn("more than 1024", check_pack.skill_problems(self.root)[0])
 
+    def test_an_unquoted_colon_space_is_reported_and_a_quoted_one_is_not(self):
+        write_skill(self.root, "stacks/node/skills/widgets", "---\nname: widgets\ndescription: Create widgets: use templates\n---\n")
+        write_skill(self.root, "stacks/node/skills/quoted", "---\nname: quoted\ndescription: \"Create widgets: use templates\"\n---\n")
+        problems = check_pack.skill_problems(self.root)
+        self.assertEqual(len(problems), 1)
+        self.assertIn("widgets/SKILL.md: description has ': ' without quotes", problems[0])
+
     def test_a_skill_without_evals_is_listed(self):
         write_skill(self.root, "stacks/react/skills/karpathy-guidelines", "---\nname: karpathy-guidelines\ndescription: d\n---\n")
         write_skill(self.root, "stacks/react/skills/component-creation", "---\nname: component-creation\ndescription: d\n---\n")
