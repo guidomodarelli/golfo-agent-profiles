@@ -11,20 +11,22 @@ El motor (scripts, hooks, settings, profiles de CI) vive en golfo-kit. Acá est�
 
 ## Usarlo
 
-En `.agents/agent-ready.json` del repositorio:
+Es la fuente de contenido por defecto de agent-ready-setup (`sources.golfo`, golfo-kit 0.90.0 o más nuevo): un repositorio que
+no declara nada lo usa siguiendo `main`. Para fijarlo a una versión, en `.agents/agent-ready.json`:
 
 ```json
 {
   "profiles": ["node"],
   "sources": {
-    "golfoKit": { "source": "git+https://github.com/guidomodarelli/golfo-agent-profiles", "ref": "v1.0.0" }
+    "golfo": { "ref": "v1.0.0", "updates": "pinned" }
   }
 }
 ```
 
-- `ref` puede ser un tag (recomendado), `main` o un commit completo.
-- Con `"updates": "pinned"`, el repositorio queda en la revisión de su lock hasta `agent-ready update golfo-kit`.
-- Necesita golfo-kit 0.88.0 o más nuevo.
+- `ref` puede ser un tag (recomendado para fijarlo), `main` o un commit completo.
+- Con `"updates": "pinned"`, el repositorio queda en la revisión de su lock hasta `agent-ready update golfo`, y
+  `agent-ready update golfo --to <tag>` adopta exactamente esa versión.
+- Otro pack de contenido (un fork, un mirror) se declara con `"source": "git+https://..."` en el mismo objeto.
 
 ## Estructura
 

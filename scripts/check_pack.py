@@ -5,7 +5,7 @@
 2. The skills: each SKILL.md follows the Agent Skills specification.
 3. The version: a change to the content bumps the version and declares it in ``changes`` (with --base).
 4. The engine: with the agent-ready-setup skill of golfo-kit (--engine), every profile applies in an
-   empty repository that takes its content from this commit through ``sources.golfoKit.source``.
+   empty repository that takes its content from this commit through ``sources.golfo``.
 
 Exit codes: 0 everything passed, 1 a check failed, 2 the arguments are wrong.
 """
@@ -268,7 +268,8 @@ def apply_problems(engine_dir, pack_dir, catalog, console):
             project = os.path.join(work_dir, "projects", name)
             os.makedirs(os.path.join(project, ".agents"))
             subprocess.run(["git", "init", "-q", project], check=True, env=environment)
-            manifest = {"profiles": [name], "sources": {"golfoKit": {"source": f"git+{PACK_URL}#{commit}"}}}
+            # The source of the content: this pack at this commit (the engine reaches the checkout through url.insteadOf).
+            manifest = {"profiles": [name], "sources": {"golfo": {"source": f"git+{PACK_URL}", "ref": commit}}}
             with open(os.path.join(project, ".agents", "agent-ready.json"), "w", encoding="utf-8") as file_handle:
                 json.dump(manifest, file_handle)
             with console.spinner(f"applying {name}"):
