@@ -1,0 +1,41 @@
+## What This Repository Is
+
+The official content pack of [agent-ready-setup](https://github.com/guidomodarelli/golfo-marketplace/tree/main/plugins/golfo-kit/skills/agent-ready-setup), the skill of the golfo-kit plugin that sets up repositories for Claude Code and Codex. The engine (scripts, hooks, settings, CI profiles, provider capabilities) lives in golfo-kit; this repository holds the content it projects:
+
+- `agent-ready-pack.json` — the catalog: `version`, `minEngine`, `changes`, `baseAssets` and the `profiles`.
+- `base/` — what every repository gets: common rules, skills and blocks, and `agents-template.md`, the template of `AGENTS.md`.
+- `stacks/<name>/` — each primary stack (`node`, `react`, `nextjs`, …): rules, skills, agents, commands, the stack section of `AGENTS.md` (`blocks/AGENTS.md`) and nested targets (`nested/`).
+- `profiles/<name>/` — capabilities such as `software-development` (with `agents-skeleton.md`) and `business-flows`.
+- `scripts/` — the checks of the pack (`check_pack.py`) and its release (`release.py`); `tests/` tests them.
+
+A repository consumes this pack with `sources.golfoKit.source` in its `.agents/agent-ready.json`. The format is the one of `references/profiles-and-lockfile.md` of agent-ready-setup, section «Contenido de otro repositorio».
+
+## Mandatory Rules
+
+1. **Use `/skill-creator`** to create or change a skill of the pack (its `SKILL.md`, references, scripts or evals under `base/skills/`, `stacks/*/skills/` or `profiles/*/skills/`).
+2. **Run `/skill-optimizer` with `mode=audit`** on every skill you created or changed before reporting the work as done, and include its status. Escalate to `quick` or `full` only if the audit finds a measurable problem and the user agrees.
+3. **Every `SKILL.md` follows the [Agent Skills specification](https://agentskills.io/specification)**: `name` in kebab-case, at most 64 characters and equal to its directory; `description` between 1 and 1024 characters, quoted when it contains `: `. `scripts/check_pack.py` enforces it.
+4. **Every skill keeps its evals** in `evals/eval-config.json`, run with `run-evals` of golfo-marketplace's `skill-eval-runner` (`run-evals <path-to-skill>`).
+5. **Rules are not skills.** A rule (`rules/*.md`) covers one concern, needs no `/skill-creator`, and references another rule by the path it is projected to (`.agents/rules/<name>.md`), never by its path in this repository. Each rule a stack publishes carries the stack prefix (`node-security.md`), so two stacks never collide.
+6. **Version every change to the content.** A pull request that changes `base/`, `stacks/`, `profiles/` or the catalog raises `version` (semver) in `agent-ready-pack.json` and adds its entry to `changes`, newest first, with `"breaking": true` when a consumer has to act (a profile removed or renamed, a rule that now asks for the opposite). Raise `minEngine` when the content uses something only a newer golfo-kit understands. The CI fails otherwise.
+7. **Releases are tags.** Merging to `main` publishes `v<version>` as a tag and a GitHub release with the `changes` summary (`.github/workflows/release.yml`). A published tag never moves: consumers pin it.
+8. **Nothing of the engine lives here.** Hooks, settings, CI profiles (`kind: ci`), configuration schemas and provider capabilities belong to golfo-kit; the engine rejects a pack that declares them.
+
+## Checking a Change
+
+```bash
+# Tests of the checks
+python3 -m unittest discover -s tests
+
+# Catalog, skills and version against main, and a projection of every profile with the engine
+python3 scripts/check_pack.py --base origin/main \
+  --engine ../golfo-marketplace/plugins/golfo-kit/skills/agent-ready-setup
+```
+
+The projection applies each profile in an empty repository of its own that takes the committed content of `HEAD` through `sources.golfoKit.source`, with a fake HOME and fake provider CLIs: it never starts a real agent. Commit before running it; uncommitted changes are not checked.
+
+## Conventions
+
+- Branches: `feature/<topic>`. Commits: `feat(content): …`, `fix(content): …`, `ci: …`.
+- Pull requests describe the change for the repositories that consume the pack: what an agent will do differently.
+- Single source of truth: a procedure or a convention lives in one file; the others reference it.
