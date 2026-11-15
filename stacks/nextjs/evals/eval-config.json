@@ -1,0 +1,313 @@
+{
+  "schema_version": 2,
+  "skill": "nextjs-rules",
+  "description": "Evalúa las rules de Next.js: validación de input con la factory del proyecto, configuración por entorno y contratos con upstream (request saliente y consumo de la respuesta).",
+  "test_cases": [
+    {
+      "id": "frontend-api-validation-middleware-barrel",
+      "description": "Explica la ubicación de los validadores API y su barrel de imports.",
+      "input": "Para un endpoint REST del BFF, ¿dónde van los schemas y middleware de la librería de validación de input del proyecto, y cómo los importa el router? No ejecutes Bash ni escribas archivos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "api/middlewares/validation/",
+          "description": "Ubica schemas y middleware bajo la carpeta de validación API"
+        },
+        {
+          "type": "regex",
+          "pattern": "index\\.js",
+          "description": "Incluye barrel index.js para JavaScript"
+        },
+        {
+          "type": "contains",
+          "value": "createValidationMiddleware",
+          "description": "Mantiene la validación del SDK como middleware"
+        },
+        {
+          "type": "contains",
+          "value": "utils/validation",
+          "description": "Indica reutilizar o crear la factory de validación antes de importarla"
+        }
+      ]
+    },
+    {
+      "id": "frontend-api-validation-middleware-headers",
+      "description": "Explica cómo validar headers propios del cliente sin reemplazar req.headers.",
+      "input": "Una ruta REST del BFF lee el header propio X-Client-Version. ¿Cómo se valida con la factory de validación y desde dónde lo lee el handler? No ejecutes Bash ni escribas archivos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "x-client-version",
+          "description": "Declara la clave del header en minúsculas"
+        },
+        {
+          "type": "contains",
+          "value": "req.validatedHeaders",
+          "description": "Lee el header validado desde la propiedad dedicada"
+        },
+        {
+          "type": "contains",
+          "value": "headers.x-client-version",
+          "description": "Indica el path del issue con el prefijo headers"
+        }
+      ]
+    },
+    {
+      "id": "frontend-scope-comes-from-config",
+      "description": "Explica cómo configurar scope de API sin agregarlo como query parameter.",
+      "input": "Voy a crear un service del BFF que llama una API cuyo scope cambia entre sandbox y producción. Explicá qué piden las rules: indicá si puede construir `?scope=sandbox`, si debe crear un archivo nuevo de configuración, en qué archivos existentes de `config/` declarar el valor por entorno y cómo debe consumirlo el cliente. No ejecutes Bash ni escribas archivos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "No:",
+            "No agregar",
+            "No crear",
+            "No usar",
+            "no agregar",
+            "no crear",
+            "no usar",
+            "no debe",
+            "no debe construir",
+            "no se agrega",
+            "never add",
+            "never create",
+            "never use",
+            "prohíbe agregar",
+            "la rule prohíbe"
+          ],
+          "description": "Prohíbe scope como query parameter"
+        },
+        {
+          "type": "contains",
+          "value": "config/",
+          "description": "Ubica scope en configuración por entorno"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "local.js",
+            "default.js",
+            "default-production.js",
+            "sandbox.js"
+          ],
+          "description": "Reutiliza archivos de configuración existentes"
+        },
+        {
+          "type": "regex",
+          "pattern": "(^|[^[:alpha:]])(no|nunca|never|not|tampoco)[^[:alpha:]][^.]{0,40}(crear|cree|crea|create)",
+          "description": "Evita crear archivo nuevo solo para scope"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "scopeConfig",
+            "módulo de configuración",
+            "config module",
+            "configuración del cliente"
+          ],
+          "description": "Indica consumo mediante configuración del cliente"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "sandbox",
+            "prod",
+            "producción"
+          ],
+          "description": "Cubre valores dependientes del entorno"
+        }
+      ]
+    },
+    {
+      "id": "frontend-upstream-error-contract-is-not-runtime-validated",
+      "description": "Evita validar el contrato completo de respuestas y errores upstream.",
+      "input": "Revisá un service del BFF que recibe una respuesta exitosa de backend con datos incompletos y, en otro caso, un error upstream cuyo body puede traer `code`, `message` y `details` o puede cambiar entre versiones. Explicá qué piden las rules: qué no debe validar ni convertir en schema, qué señales mínimas puede usar para decidir el flujo y cómo debe mapear una falla que el adapter no puede consumir. Diferenciá esto de validar el request del cliente. No ejecutes Bash ni escribas archivos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(^|[^[:alpha:]])(no|sin|nunca|never|not)[^[:alpha:]][^.]{0,50}(valid|schema|revalid)",
+          "description": "Prohíbe validación completa de payloads upstream"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "status",
+            "HTTP",
+            "metadata de transporte",
+            "transport metadata",
+            "adapter"
+          ],
+          "description": "Usa status, transporte o clasificación del adapter"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "narrowing",
+            "narrowing estructural",
+            "null",
+            "array",
+            "object",
+            "discriminador",
+            "discriminator"
+          ],
+          "description": "Permite solo narrowing estructural mínimo para control flow"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "request del cliente",
+            "input del cliente",
+            "client request",
+            "client-controlled input",
+            "borde del middleend"
+          ],
+          "description": "Distingue input middleend de respuesta upstream"
+        }
+      ]
+    },
+    {
+      "id": "frontend-outbound-payload-separates-contracts",
+      "description": "Distingue el payload saliente del BFF de input, DTO público y response upstream.",
+      "input": "Estoy diseñando un BFF que recibe un request del cliente y llama a un endpoint upstream. Explicá cómo debe modelar el body que envía al proveedor para que el contrato sea fácil de encontrar, qué entidades debe mantener separadas y dónde ocurre la validación. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "payload saliente",
+            "outbound",
+            "request payload",
+            "payload que envía",
+            "UpstreamRequest",
+            "request upstream",
+            "body que envía"
+          ],
+          "description": "Identifica el contrato de request enviado por el BFF"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "DTO",
+            "request del cliente",
+            "req.body",
+            "input del cliente"
+          ],
+          "description": "Distingue el input o DTO público del payload upstream"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "response upstream",
+            "respuesta upstream",
+            "respuesta del proveedor",
+            "upstream response"
+          ],
+          "description": "Distingue la respuesta upstream del request saliente"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "boundary",
+            "borde",
+            "handler",
+            "middleware",
+            "validación"
+          ],
+          "description": "Ubica la validación de input en el boundary correspondiente"
+        }
+      ]
+    },
+    {
+      "id": "frontend-outbound-payload-rejects-passthrough",
+      "description": "Evita enviar req.body directamente y exige mapping explícito por operación.",
+      "input": "Revisá este diseño de service: `return upstreamClient.post('/shipments', req.body)`. El endpoint público y el upstream hoy parecen tener los mismos campos, pero el cliente podría agregar propiedades en el futuro. Indicá qué deben recomendar las rules y por qué. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(^|[^[:alpha:]])(no|nunca|never|evit|rechaz|prohib|prohíb)[^.]{0,80}req\\.body|req\\.body[^.]{0,80}(prohib|prohíb|no se|evit|rechaz)",
+          "description": "Prohíbe passthrough directo del request del cliente"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "req.body",
+            "request.body",
+            "body del request"
+          ],
+          "description": "Menciona explícitamente el objeto que no debe pasarse"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "mapping explícito",
+            "mapeo explícito",
+            "explicit mapping",
+            "payload nombrado",
+            "entidad"
+          ],
+          "description": "Propone construcción explícita del contrato upstream"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "campos del cliente",
+            "leak",
+            "filtrar",
+            "exponer",
+            "contrato"
+          ],
+          "description": "Explica el riesgo de filtrar campos o esconder cambios de contrato"
+        }
+      ]
+    },
+    {
+      "id": "frontend-outbound-payload-preserves-response-boundary",
+      "description": "No convierte el modelado de requests salientes en validación de responses upstream.",
+      "input": "Una persona propone agregar un builder para el request que el BFF envía a upstream y, además, un schema runtime para validar cada response del proveedor. Explicá qué parte corresponde a la nueva regla y qué parte contradice la sección Input Validation de react-security.md. Diferenciá validación de input del cliente, construcción del request y consumo de response upstream. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "no revalidar",
+            "no validar",
+            "respuesta upstream",
+            "response upstream"
+          ],
+          "description": "Mantiene prohibida la validación completa de responses upstream"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "builder",
+            "factory",
+            "construcción",
+            "payload saliente"
+          ],
+          "description": "Acepta modelar explícitamente el request saliente"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "input del cliente",
+            "request del cliente",
+            "boundary",
+            "borde",
+            "middleware"
+          ],
+          "description": "Distingue la validación de input en el boundary"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "narrowing",
+            "status",
+            "transporte",
+            "control flow",
+            "flujo"
+          ],
+          "description": "Conserva narrowing estructural mínimo solo si cambia el flujo"
+        }
+      ]
+    }
+  ]
+}

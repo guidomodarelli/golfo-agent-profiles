@@ -25,6 +25,9 @@ PACK_CATALOG_FILE_NAME = "agent-ready-pack.json"
 PACK_SCHEMA_VERSION = 1
 # Where the content lives: what a change to the content touches.
 CONTENT_PATHS = ("base/", "stacks/", "profiles/", PACK_CATALOG_FILE_NAME)
+# Evals sit next to what they test (a skill, or the rules of a stack, a profile or base/) but the
+# engine never projects them, so changing only evals changes nothing for the consumers of the pack.
+EVALS_DIRECTORY_NAME = "evals"
 SKILL_FILE_NAME = "SKILL.md"
 EVAL_CONFIG_RELATIVE_PATH = os.path.join("evals", "eval-config.json")
 SKILLS_DIRECTORY_NAME = "skills"
@@ -182,9 +185,14 @@ def run_git(pack_dir, arguments):
     return completed.stdout
 
 
+def is_versioned_content(path):
+    """Whether a changed path is content the engine projects: under the content paths and outside any evals/."""
+    return path.startswith(CONTENT_PATHS) and EVALS_DIRECTORY_NAME not in path.split("/")[:-1]
+
+
 def version_problems(changed_paths, base_catalog, catalog):
-    """A change to the content needs a higher version, declared in ``changes``."""
-    if not any(path.startswith(CONTENT_PATHS) for path in changed_paths):
+    """A change to the content needs a higher version, declared in ``changes``; evals alone do not."""
+    if not any(is_versioned_content(path) for path in changed_paths):
         return []
     base_version, version = (base_catalog or {}).get("version"), catalog.get("version")
     problems = []
