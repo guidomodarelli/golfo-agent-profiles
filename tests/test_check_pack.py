@@ -99,6 +99,22 @@ class VersionProblemsTest(unittest.TestCase):
         self.assertEqual(check_pack.version_problems(["stacks/node/rules/x.md"], self.catalog("1.0.0", ["1.0.0"]),
                                                      self.catalog("1.1.0", ["1.1.0", "1.0.0"])), [])
 
+    def test_a_change_to_evals_only_needs_no_version(self):
+        evals = ["stacks/nextjs/evals/eval-config.json", "stacks/react/skills/component-creation/evals/eval-config.json"]
+        self.assertEqual(check_pack.version_problems(evals, self.catalog("1.0.0", ["1.0.0"]),
+                                                     self.catalog("1.0.0", ["1.0.0"])), [])
+
+    def test_evals_next_to_a_content_change_still_need_a_version(self):
+        problems = check_pack.version_problems(["stacks/nextjs/evals/eval-config.json", "stacks/nextjs/rules/x.md"],
+                                               self.catalog("1.0.0", ["1.0.0"]), self.catalog("1.0.0", ["1.0.0"]))
+        self.assertEqual(len(problems), 1)
+        self.assertIn("is not higher than 1.0.0", problems[0])
+
+    def test_a_rule_named_like_the_evals_directory_is_still_content(self):
+        problems = check_pack.version_problems(["stacks/nextjs/rules/evals"], self.catalog("1.0.0", ["1.0.0"]),
+                                               self.catalog("1.0.0", ["1.0.0"]))
+        self.assertEqual(len(problems), 1)
+
     def test_the_first_version_only_needs_its_changes_entry(self):
         self.assertEqual(check_pack.version_problems([check_pack.PACK_CATALOG_FILE_NAME], None,
                                                      self.catalog("1.0.0", ["1.0.0"])), [])

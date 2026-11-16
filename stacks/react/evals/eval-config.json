@@ -1,0 +1,327 @@
+{
+  "schema_version": 2,
+  "skill": "react-rules",
+  "description": "Evalúa las rules de React: estilo, copy para personas no técnicas, feedback de acciones async, seguridad del BFF y statuses públicos de errores conocidos.",
+  "test_cases": [
+    {
+      "id": "frontend-middleend-known-errors-use-4xx",
+      "description": "Traduce causas conocidas de middleend a 4xx sin fallback 5xx genérico.",
+      "input": "Estoy implementando un endpoint REST middleend para crear y consultar productos. El servicio puede devolver errores de validación de dominio, recurso inexistente o conflicto de estado, y el request ya pasó la validación de forma. Explicá cómo piden las rules manejar esos errores, qué statuses públicos elegir, qué registrar y qué respuesta evitar. No ejecutes Bash ni escribas archivos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "4xx",
+            "400",
+            "404",
+            "409",
+            "422"
+          ],
+          "description": "Mapea causas conocidas a statuses 4xx"
+        },
+        {
+          "type": "regex",
+          "pattern": "(causa|error)e?s? conocid|client/domain|cliente o (de |del )?dominio|request o (al |el )?(estado (del |de )?)?dominio",
+          "description": "Identifica causa conocida de request o dominio"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "log",
+            "registrar",
+            "server-side",
+            "servidor"
+          ],
+          "description": "Mantiene diagnóstico en logs del servidor"
+        },
+        {
+          "type": "regex",
+          "pattern": "(no|nunca|never|evit)[^.]{0,60}5xx|5xx[^.]{0,80}(solo|únicamente|se reservan|reservad|inesperad)|respuesta (a )?evitar",
+          "description": "Indica que no debe usar un fallback 5xx para causa conocida"
+        }
+      ]
+    },
+    {
+      "id": "frontend-middleend-distinguishes-hydration-origin",
+      "description": "Distingue hidratación causada por request/dominio de payload upstream incompleto.",
+      "input": "Revisá dos casos para un middleend: A) el request o estado de dominio produce atributos incompletos y llega con `status: 502`; B) un backend/upstream devuelve un payload incompleto o rompe su contrato y también llega con `status: 502`. Respondé primero con exactamente dos líneas etiquetadas `A:` y `B:` indicando el status público de cada caso; después explicá cómo piden las rules clasificar cada origen y cuándo debe conservarse un 5xx. No ejecutes Bash ni escribas archivos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "origen",
+            "causa",
+            "atribuible",
+            "distinguir"
+          ],
+          "description": "Exige clasificar según el origen de la falla"
+        },
+        {
+          "type": "regex",
+          "pattern": "^[[:space:]]*A[[:space:]]*:[[:space:]]*(4xx|400|404|409|422)([[:space:][:punct:]]|$)",
+          "description": "Asigna 4xx o 422 al caso A de request o dominio"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "upstream",
+            "backend",
+            "dependencia",
+            "contrato"
+          ],
+          "description": "Reconoce una respuesta upstream como causa distinta"
+        },
+        {
+          "type": "regex",
+          "pattern": "^[[:space:]]*B[[:space:]]*:[[:space:]]*(5xx|502|503)([[:space:][:punct:]]|$)",
+          "description": "Asigna 5xx o 502 al caso B de upstream o dependencia"
+        },
+        {
+          "type": "regex",
+          "pattern": "(^|[^[:alpha:]])(no|sin|nunca|never|not)[^[:alpha:]][^.]{0,40}s(i|í)ntoma|s(i|í)ntoma[^.]{0,60}(no alcanza|no basta|no sirve|no es suficiente|no decide)",
+          "description": "Evita mapear hidratación a un status por el síntoma solamente"
+        }
+      ]
+    },
+    {
+      "id": "frontend-user-facing-copy-avoids-technical-jargon",
+      "description": "Mantiene la interfaz clara para personas no técnicas y reserva detalle técnico para errores accionables.",
+      "input": "Leé las rules del stack y explicá cómo escribir textos visibles en una interfaz para personas no técnicas. Incluí qué hacer con etiquetas, botones, estados de carga y mensajes normales; usá el caso `Reintentar preflight` como ejemplo de texto que debe simplificarse; y diferenciá la excepción permitida para errores. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "persona no técnica",
+            "personas no técnicas",
+            "non-technical",
+            "nontechnical"
+          ],
+          "description": "Prioriza comprensión de personas no técnicas"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "Reintentar",
+            "Retry"
+          ],
+          "description": "Prefiere una acción simple sin detalle interno"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "botones",
+            "etiquetas",
+            "estados de carga",
+            "helper text",
+            "labels",
+            "loading states"
+          ],
+          "description": "Aplica la regla a las superficies normales de UI"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "error accionable",
+            "errores accionables",
+            "actionable error",
+            "technical detail",
+            "detalle técnico"
+          ],
+          "description": "Permite detalle técnico únicamente cuando ayuda a resolver un error"
+        }
+      ]
+    },
+    {
+      "id": "react-style-prefers-semantic-strings-over-boolean-parameters",
+      "description": "Reemplaza parámetros booleanos que cambian comportamiento por strings semánticos de estado.",
+      "input": "Leé las rules del stack sobre parámetros de funciones. En `api/services/users.ts` existe `listUsers(page: number, activeOnly = false, adminOnly = false)` y se llama como `listUsers(page, true, true)`. Explicá qué problema tiene, proponé la firma y la llamada corregidas, y aclará qué booleanos sí pueden quedarse. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "boolean",
+            "booleano"
+          ],
+          "description": "Identifica el parámetro booleano como el problema"
+        },
+        {
+          "type": "regex",
+          "pattern": "'(all|active|admin)[a-z-]*'",
+          "description": "Propone valores string semánticos de estado"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "union",
+            "as const",
+            "unión"
+          ],
+          "description": "Declara los valores como union type o const object"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "combinaci",
+            "combination"
+          ],
+          "description": "Explica que evita combinaciones inválidas u ocultas"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "disabled",
+            "checked",
+            "upstream",
+            "payload",
+            "predicado",
+            "predicate"
+          ],
+          "description": "Aclara las excepciones que siguen siendo booleanas"
+        },
+        {
+          "type": "not_contains_any",
+          "values": [
+            "enum User"
+          ],
+          "description": "No propone un enum"
+        }
+      ]
+    },
+    {
+      "id": "frontend-user-facing-feedback-error-tracking-snackbar",
+      "description": "Reserva el feedback de error tracking para contextos reales y limpia estado stale entre recursos.",
+      "input": "Leé las rules del stack sobre feedback de acciones async. Un componente muestra el snackbar de error tracking del proyecto cuando la lista viene vacía y arma a mano el contexto de error tracking si el BFF no lo envía; además el error del recurso anterior queda visible al seleccionar otro. Explicá qué corregir y qué tests agregar. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "user-facing-feedback.md",
+          "description": "Cita la rule de feedback del stack frontend"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "Message",
+            "message",
+            "Snackbar común",
+            "Snackbar regular",
+            "regular `Snackbar`",
+            "snackbar regular",
+            "toast",
+            "Toast",
+            "notificación",
+            "mensaje inline",
+            "inline"
+          ],
+          "description": "Usa el mensaje, toast o notificación común del proyecto para estados esperados como lista vacía"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "fabricar",
+            "inventar",
+            "fabricate",
+            "no armar"
+          ],
+          "description": "Prohíbe fabricar un contexto de error tracking"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "limpiar",
+            "stale",
+            "recurso anterior"
+          ],
+          "description": "Limpia el error del recurso anterior"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "fallback"
+          ],
+          "description": "Cubre fallback sin contexto en tests"
+        }
+      ]
+    },
+    {
+      "id": "react-style-i18n-tokens-image-provider",
+      "description": "Exige i18n.gettext cuando el proyecto ya usa esa librería de i18n, tokens del design system con la solución de estilos del proyecto, el componente de imágenes del proyecto y su logger.",
+      "input": "Leé las rules del stack. En un proyecto que ya traduce su copy con `i18n.gettext`, un componente nuevo tiene el texto del botón hardcodeado, un color #3483fa en el CSS, un <img> con URL absoluta del CDN y un console.error en el catch. Explicá qué reglas incumple y cómo corregir cada punto. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "gettext",
+          "description": "Pasa el copy visible por i18n.gettext"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "token",
+            "tokens"
+          ],
+          "description": "Reemplaza el color hardcodeado por tokens del design system"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "componente de imágenes",
+            "image component",
+            "provider de imágenes",
+            "image provider"
+          ],
+          "description": "Usa el componente o provider de imágenes del proyecto en lugar de URL absoluta"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "logger del proyecto",
+            "project's logger",
+            "logger"
+          ],
+          "description": "Reemplaza console.* por el logger del proyecto"
+        }
+      ]
+    },
+    {
+      "id": "react-security-validates-public-dto",
+      "description": "Valida el DTO público del middleend sin revalidar la respuesta upstream.",
+      "input": "Leé la rule de seguridad del stack. Un handler del BFF devuelve al cliente un DTO armado desde la respuesta upstream. Explicá qué se valida y qué no entre input del cliente, respuesta upstream y DTO público, y dónde. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "DTO",
+          "description": "Trata el DTO público como contrato propio"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "no revalidar",
+            "no validar",
+            "sin revalidar",
+            "sin validar"
+          ],
+          "description": "No revalida la respuesta upstream"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "una sola vez",
+            "una vez",
+            "boundary",
+            "borde"
+          ],
+          "description": "Valida input una vez en el boundary de la ruta"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "librería de validación",
+            "libreria de validación",
+            "validation library",
+            "zod"
+          ],
+          "description": "Usa la librería de validación de input del proyecto"
+        }
+      ]
+    }
+  ]
+}
