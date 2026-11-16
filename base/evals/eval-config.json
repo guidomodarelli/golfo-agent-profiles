@@ -142,7 +142,8 @@
           ],
           "description": "Recupera evidencia de transporte"
         }
-      ]
+      ],
+      "control": "Con un navegador conectado, el modelo ya lo usa antes de preguntar. Cuida que la rule no lo contradiga."
     },
     {
       "id": "browser-fallback-available-provider",
@@ -164,7 +165,8 @@
           "pattern": "\"installRequired\"[[:space:]]*:[[:space:]]*false",
           "description": "Descarta instalación innecesaria"
         }
-      ]
+      ],
+      "control": "Usar otro proveedor de navegador disponible antes de pedir una instalación es lo que el modelo ya hace sin la rule."
     },
     {
       "id": "browser-authentication-blocker",
@@ -198,7 +200,8 @@
           ],
           "description": "Pide desbloquear sesión en lugar de evidencia manual"
         }
-      ]
+      ],
+      "control": "Ante un MFA que no puede completar, el modelo ya pide al usuario que se autentique. Cuida que la rule no lo contradiga."
     }
   ]
 }

@@ -79,7 +79,8 @@
           "description": "No extiende la excepción al test de oxlint que el AGENTS.md no pide",
           "critical": false
         }
-      ]
+      ],
+      "control": "Seguir lo que pide el AGENTS.md del proyecto y no sumar tests sin pedido es lo que el modelo ya hace sin la rule."
     },
     {
       "id": "patterns-we-do-not-use-fixes-order-endpoint-keeps-calendar-day",
@@ -153,7 +154,8 @@
           "description": "Preserva el error original o lo registra en vez de tragarlo",
           "critical": false
         }
-      ]
+      ],
+      "control": "Los arreglos (decimal para dinero, timestamps en UTC, status de error) son buena práctica común que el modelo ya sigue."
     }
   ]
 }
