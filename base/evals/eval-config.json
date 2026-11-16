@@ -111,6 +111,94 @@
           "critical": false
         }
       ]
+    },
+    {
+      "id": "browser-before-manual-evidence",
+      "description": "Prioriza browser disponible antes de pedir evidencia manual.",
+      "input": "Estás depurando un error HTTP de una app Java; usuario no pasó URL ni logs. Chrome DevTools MCP expone pestañas abiertas con Swagger autenticado y dashboard del proyecto. Según la rule browser-before-user-questions.md, indicá primera acción concreta y evidencia que recuperarías antes de preguntar. No ejecutes herramientas; describí decisión.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "pestañas",
+            "tabs"
+          ],
+          "description": "Inspecciona pestañas existentes antes de delegar al usuario"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "Chrome DevTools",
+            "chrome_devtools"
+          ],
+          "description": "Elige capacidad disponible"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "HTTP",
+            "network",
+            "red"
+          ],
+          "description": "Recupera evidencia de transporte"
+        }
+      ]
+    },
+    {
+      "id": "browser-fallback-available-provider",
+      "description": "Usa alternativa disponible sin instalar MCP preferido.",
+      "input": "En Codex estás revisando un flujo web servido por Node. Chrome DevTools MCP no está conectado, pero Playwright MCP está disponible. Según la rule browser-before-user-questions.md, ¿qué hacés antes de pedir al usuario captura o instalación de Chrome DevTools? No ejecutes herramientas; indicá próxima acción y si requiere instalación. Respondé JSON con tool (nombre de herramienta), firstAction (use-browser, ask-user o install-browser), installRequired (boolean) y reason (justificación).",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "Playwright",
+          "description": "Usa alternativa realmente disponible"
+        },
+        {
+          "type": "regex",
+          "pattern": "\"firstAction\"[[:space:]]*:[[:space:]]*\"use-browser\"",
+          "description": "Decide usar browser antes de delegar o instalar"
+        },
+        {
+          "type": "regex",
+          "pattern": "\"installRequired\"[[:space:]]*:[[:space:]]*false",
+          "description": "Descarta instalación innecesaria"
+        }
+      ]
+    },
+    {
+      "id": "browser-authentication-blocker",
+      "description": "Pregunta mínima después de agotar acceso recuperable.",
+      "input": "En Claude Code investigás dashboard de un servicio Go. Browser disponible llega a desafío MFA y ninguna sesión alternativa está autenticada. Según la rule browser-before-user-questions.md, indicá próximo paso, evidencia del bloqueo y qué debe aportar usuario. No ejecutes herramientas ni inventes acceso.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "MFA",
+          "description": "Identifica bloqueo real de autenticación"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "usuario",
+            "user",
+            "persona",
+            "vos",
+            "pedirte",
+            "te pido"
+          ],
+          "description": "Dice qué tiene que aportar el usuario"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "autenticación",
+            "autenticar",
+            "autenticarse",
+            "completar"
+          ],
+          "description": "Pide desbloquear sesión en lugar de evidencia manual"
+        }
+      ]
     }
   ]
 }

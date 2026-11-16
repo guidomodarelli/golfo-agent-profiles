@@ -58,25 +58,9 @@
       "input": "Voy a crear un service del BFF que llama una API cuyo scope cambia entre sandbox y producción. Explicá qué piden las rules: indicá si puede construir `?scope=sandbox`, si debe crear un archivo nuevo de configuración, en qué archivos existentes de `config/` declarar el valor por entorno y cómo debe consumirlo el cliente. No ejecutes Bash ni escribas archivos; respondé desde las rules.",
       "assertions": [
         {
-          "type": "contains_any",
-          "values": [
-            "No:",
-            "No agregar",
-            "No crear",
-            "No usar",
-            "no agregar",
-            "no crear",
-            "no usar",
-            "no debe",
-            "no debe construir",
-            "no se agrega",
-            "never add",
-            "never create",
-            "never use",
-            "prohíbe agregar",
-            "la rule prohíbe"
-          ],
-          "description": "Prohíbe scope como query parameter"
+          "type": "regex",
+          "pattern": "scope=sandbox[^.]{0,80}([Nn][Oo]([^[:alpha:]]|$)|[Nn]unca)|(^|[^[:alpha:]])([Nn]o|[Nn]unca|prohíbe)[^.]{0,40}(agregar|reenviar|construir|hardcode)",
+          "description": "Rechaza construir ?scope=sandbox en el request"
         },
         {
           "type": "contains",
@@ -306,6 +290,53 @@
             "flujo"
           ],
           "description": "Conserva narrowing estructural mínimo solo si cambia el flujo"
+        }
+      ]
+    },
+    {
+      "id": "frontend-outbound-payload-uses-proportional-builder",
+      "description": "Usa factory o builder según complejidad y evita abstracción ceremonial.",
+      "input": "Compará dos payloads enviados a upstream: A) `POST /health` con un objeto fijo de dos campos; B) `POST /orders` con transformaciones, defaults y secciones anidadas condicionales. Explicá cuándo usar un objeto nombrado, una factory o un builder, y cómo nombrar cada contrato. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "factory",
+            "builder"
+          ],
+          "description": "Considera los patrones de construcción disponibles"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "payload simple",
+            "simple",
+            "objeto nombrado",
+            "objeto local"
+          ],
+          "description": "Mantiene una solución simple para payload trivial"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "complejidad",
+            "condicional",
+            "anidada",
+            "transformación",
+            "defaults"
+          ],
+          "description": "Relaciona builder con composición real del payload"
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "operación",
+            "endpoint",
+            "upstream",
+            "Create",
+            "Order"
+          ],
+          "description": "Exige nombres específicos por operación y boundary"
         }
       ]
     }
