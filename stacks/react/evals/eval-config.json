@@ -408,7 +408,8 @@
           "value": "Number.isSafeInteger",
           "description": "Permite complemento nativo acotado"
         }
-      ]
+      ],
+      "control": "Validar el input del cliente y no revalidar lo del upstream es lo que el modelo ya propone sin la rule."
     },
     {
       "id": "frontend-bff-preserves-upstream-status-and-owns-local-errors",
@@ -488,7 +489,8 @@
           ],
           "description": "Evita validar el payload upstream completo y usa metadata mínima"
         }
-      ]
+      ],
+      "control": "Conservar el status del upstream y devolver 4xx propios es práctica HTTP común que el modelo ya sigue sin la rule."
     },
     {
       "id": "frontend-bff-error-helper-never-fabricates-upstream-status",

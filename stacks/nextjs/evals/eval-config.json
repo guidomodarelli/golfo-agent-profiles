@@ -338,7 +338,8 @@
           ],
           "description": "Exige nombres específicos por operación y boundary"
         }
-      ]
+      ],
+      "control": "Elegir objeto, factory o builder según la complejidad del payload es diseño común que el modelo ya aplica sin la rule."
     }
   ]
 }

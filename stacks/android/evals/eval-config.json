@@ -33,7 +33,8 @@
           "description": "Explica que el APK no protege el secreto",
           "critical": true
         }
-      ]
+      ],
+      "control": "No guardar secretos en el APK es buena práctica común: el modelo ya la sigue sin la rule. Cuida que la rule no la contradiga."
     }
   ]
 }
