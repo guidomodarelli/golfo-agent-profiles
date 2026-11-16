@@ -61,10 +61,11 @@ When a change adds, modifies, or calls a project util that reimplements a mandat
    const isRecord = (value: unknown): value is Record<string, unknown> =>
      typeof value === 'object' && value !== null && !Array.isArray(value);
 
-   // ✅ Import and call lodash-es at every call site
-   import { isPlainObject } from 'lodash-es';
+   // ✅ Import and call lodash-es at every call site; isRecord accepts class instances, Date and Map,
+   // so isObjectLike plus its array exclusion keeps that behavior (isPlainObject would reject them)
+   import { isObjectLike } from 'lodash-es';
 
-   if (isPlainObject(payload)) {
+   if (isObjectLike(payload) && !Array.isArray(payload)) {
      // ...
    }
    ```

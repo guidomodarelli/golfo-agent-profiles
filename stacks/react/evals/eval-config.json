@@ -747,8 +747,8 @@
       "assertions": [
         {
           "type": "contains",
-          "value": "isPlainObject",
-          "description": "Propone isPlainObject de lodash-es para isRecord"
+          "value": "isObjectLike",
+          "description": "Reemplaza isRecord por isObjectLike, que conserva instancias de clase, Date y Map (isPlainObject las rechaza)"
         },
         {
           "type": "contains_any",

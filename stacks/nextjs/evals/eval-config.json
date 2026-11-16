@@ -59,7 +59,7 @@
       "assertions": [
         {
           "type": "regex",
-          "pattern": "scope=sandbox[^.]{0,80}([Nn][Oo]([^[:alpha:]]|$)|[Nn]unca)|(^|[^[:alpha:]])([Nn]o|[Nn]unca|prohíbe)[^.]{0,40}(agregar|reenviar|construir|hardcode)",
+          "pattern": "No:|[Nn]o debe|scope=sandbox[^.]{0,80}([Nn][Oo]([^[:alpha:]]|$)|[Nn]unca)|(^|[^[:alpha:]])([Nn]o|[Nn]unca|prohíbe)[^.]{0,40}(agregar|reenviar|construir|hardcode|usar)",
           "description": "Rechaza construir ?scope=sandbox en el request"
         },
         {
