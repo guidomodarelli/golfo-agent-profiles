@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "skill": "android-rules",
+  "description": "Evalúa las rules de Android: un secreto privado no va en BuildConfig ni se protege con ofuscación.",
+  "test_cases": [
+    {
+      "id": "android-rule-rejects-secret-in-buildconfig",
+      "description": "La rule de seguridad de Android no acepta una API key en BuildConfig aunque se ofusque.",
+      "input": "Leé la rule de seguridad del stack android. En mi app Android quiero guardar la API key privada de un proveedor de pagos en `BuildConfig`, leída de `local.properties`, y ofuscarla con R8 para que no se pueda sacar del APK. ¿Lo hago así? No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "servidor",
+            "backend",
+            "server"
+          ],
+          "description": "Mueve el secreto a un servidor",
+          "critical": true
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "extra",
+            "descompil",
+            "público",
+            "publico",
+            "no lo oculta",
+            "no la oculta",
+            "no oculta",
+            "no protege"
+          ],
+          "description": "Explica que el APK no protege el secreto",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}
