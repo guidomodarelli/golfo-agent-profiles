@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "skill": "node-rules",
+  "description": "Evalúa las rules de Node: los tests de integración no mockean la propia capa de datos.",
+  "test_cases": [
+    {
+      "id": "node-rule-integration-tests-keep-own-database-layer",
+      "description": "La rule de testing de Node no mockea la capa de base de datos propia y remite a patterns-we-do-not-use.md.",
+      "input": "Leé las rules de testing del stack node. En los tests de integración de mi API Node, ¿puedo mockear mi repositorio de base de datos para que corran más rápido? Decime qué piden las rules y qué archivo citan. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "patterns-we-do-not-use.md",
+          "description": "Cita la sección Data de patterns-we-do-not-use.md",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "[Bb]ase (de datos )?real|real database|[Cc]ontenedor|container|test database|base (de datos )?de (test|prueba)",
+          "description": "Corre los tests contra una base real",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}

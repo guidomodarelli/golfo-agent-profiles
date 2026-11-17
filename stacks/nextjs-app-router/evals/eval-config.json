@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "skill": "nextjs-app-router-rules",
+  "description": "Evalúa las rules del App Router: los datos iniciales se cargan en el servidor.",
+  "test_cases": [
+    {
+      "id": "app-router-rule-initial-data-on-server",
+      "description": "La rule del App Router carga los datos iniciales en el servidor como describe server-first-data-flow.md.",
+      "input": "Leé las rules del stack nextjs-app-router. En una página del App Router, ¿dónde cargo los datos iniciales y cuándo marco un componente con \"use client\"? Decime qué archivo citan las rules. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "server-first-data-flow.md",
+          "description": "Remite a server-first-data-flow.md",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "[Ee]vent handlers|[Hh]andlers|[Mm]anejadores de eventos|APIs? del navegador|[Bb]rowser APIs|estado (del|de) cliente",
+          "description": "Marca \"use client\" solo para APIs del navegador, estado de cliente o event handlers",
+          "critical": false
+        }
+      ]
+    }
+  ]
+}

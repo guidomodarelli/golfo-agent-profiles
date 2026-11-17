@@ -4,5 +4,9 @@ Rules for projects that route with the Next.js App Router: a `next` dependency w
 
 ## Server and client components
 
-- Components are Server Components by default. Mark one with `"use client"` only when it needs browser APIs, client state, or event handlers, and keep that boundary as low in the tree as possible.
+<!-- rule id=nextjs-app-router/components-server-components-default -->
+- Components are Server Components by default.
+  - Mark one with `"use client"` only when it needs browser APIs, client state, or event handlers, and keep that boundary as low in the tree as possible.
+
+<!-- rule id=nextjs-app-router/page-layout-loads-initial -->
 - A page or layout loads its initial data on the server and passes it as props, as `server-first-data-flow.md` describes.

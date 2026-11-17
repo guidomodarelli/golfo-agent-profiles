@@ -6,10 +6,19 @@
 
 Resolve availability in this order before importing:
 
+<!-- rule id=lodash/re-exported-ssr-framework -->
 1. **Re-exported by the SSR framework** → import from the framework's re-export path (see `Imports` in `react-style.md`).
+
+<!-- rule id=lodash/declared-dependencies-package-json -->
 2. **Declared** in `dependencies` of `package.json` → import it directly.
+
+<!-- rule id=lodash/declared-devdependencies-move-dependencies -->
 3. **Declared only in `devDependencies`** → move it to `dependencies` with the project's package manager (for example, `pnpm add --save-prod lodash-es`), because it runs in production code.
-4. **Not declared** in `package.json`, even when it is present in `node_modules/` as a transitive dependency, bundled by the SSR framework, or the project declares the CommonJS `lodash` instead → install `lodash-es` as a runtime dependency with the package manager that owns the lockfile before writing the import. This is the one install that does not need confirmation: this rule mandates it, as stated in `established-libraries.md`.
+
+<!-- rule id=lodash/declared-package-json-even -->
+4. **Not declared** in `package.json` → install `lodash-es` as a runtime dependency with the package manager that owns the lockfile before writing the import.
+   - This also applies when it is present in `node_modules/` as a transitive dependency, bundled by the SSR framework, or the project declares the CommonJS `lodash` instead.
+   - This is the one install that does not need confirmation: this rule mandates it, as stated in `established-libraries.md`.
 
 | Lockfile | Runtime install | TypeScript types |
 | --- | --- | --- |
@@ -52,23 +61,31 @@ For these cases, never hand-roll an implementation. Every method is a named impo
 
 When a change adds, modifies, or calls a project util that reimplements a mandatory case (for example `isRecord`, `unique`, `chunkArray`, `debounceFn`, `deepEqual`), replace it with the `lodash-es` method in the same change:
 
-1. Compare semantics before swapping. `isPlainObject` rejects class instances, `Date` and `Map`; if the util accepts them, keep that behavior with `isObjectLike` plus the exclusions the util already had, and say so in the change.
-2. Update every call site and delete the util, its export and its unit tests; the behavior stays covered by the tests of the call sites.
+<!-- rule id=lodash/compare-semantics-swapping-isplainobject -->
+1. Compare semantics before swapping. `isPlainObject` rejects class instances, `Date` and `Map`.
+   - If the util accepts them, keep that behavior with `isObjectLike` plus the exclusions the util already had, and say so in the change.
+
+<!-- rule id=lodash/update-call-site-delete -->
+2. Update every call site and delete the util, its export and its unit tests.
+   - The behavior stays covered by the tests of the call sites.
+
+<!-- rule id=lodash/call-lodash-es-directly -->
 3. Call `lodash-es` directly: no wrapper util that only delegates to it, not even to keep a TypeScript type guard.
+   - Example:
 
-   ```ts
-   // ❌ Hand-rolled check, or a wrapper that only delegates
-   const isRecord = (value: unknown): value is Record<string, unknown> =>
-     typeof value === 'object' && value !== null && !Array.isArray(value);
+     ```ts
+     // ❌ Hand-rolled check, or a wrapper that only delegates
+     const isRecord = (value: unknown): value is Record<string, unknown> =>
+       typeof value === 'object' && value !== null && !Array.isArray(value);
 
-   // ✅ Import and call lodash-es at every call site; isRecord accepts class instances, Date and Map,
-   // so isObjectLike plus its array exclusion keeps that behavior (isPlainObject would reject them)
-   import { isObjectLike } from 'lodash-es';
+     // ✅ Import and call lodash-es at every call site; isRecord accepts class instances, Date and Map,
+     // so isObjectLike plus its array exclusion keeps that behavior (isPlainObject would reject them)
+     import { isObjectLike } from 'lodash-es';
 
-   if (isObjectLike(payload) && !Array.isArray(payload)) {
-     // ...
-   }
-   ```
+     if (isObjectLike(payload) && !Array.isArray(payload)) {
+       // ...
+     }
+     ```
 
 ## Forbidden cases
 
@@ -89,6 +106,14 @@ Use the native equivalent instead:
 
 ## Usage
 
-- Use named imports from `lodash-es` (`import { debounce, chunk } from 'lodash-es'`); they tree-shake, so only the imported methods reach the bundle. Never use a namespace or default import (`import * as _ from 'lodash-es'`, `import _ from 'lodash-es'`), and never import from `lodash` or its subpaths (`import debounce from 'lodash/debounce'`).
+<!-- rule id=lodash/named-imports-lodash-es -->
+- Use named imports from `lodash-es` (`import { debounce, chunk } from 'lodash-es'`).
+  - They tree-shake, so only the imported methods reach the bundle.
+  - Never use a namespace or default import (`import * as _ from 'lodash-es'`, `import _ from 'lodash-es'`), and never import from `lodash` or its subpaths (`import debounce from 'lodash/debounce'`).
+
+<!-- rule id=lodash/mutate-inputs-pass-fresh -->
 - Never mutate inputs: pass a fresh target (`{}`) as the first argument to `defaults`, `defaultsDeep` and `merge`.
-- In React components, create a debounced or throttled function once per component instance (`useMemo` or `useRef`) and call `.cancel()` in the effect cleanup on unmount. Otherwise it is recreated on every render, loses its pending state, and can fire after the component unmounted.
+
+<!-- rule id=lodash/react-components-create-debounced -->
+- In React components, create a debounced or throttled function once per component instance (`useMemo` or `useRef`) and call `.cancel()` in the effect cleanup on unmount.
+  - Otherwise it is recreated on every render, loses its pending state, and can fire after the component unmounted.

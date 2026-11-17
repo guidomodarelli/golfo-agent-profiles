@@ -4,16 +4,49 @@
 
 For REST routes under api/, follow react-security.md#input-validation for validation behavior and schema scope. Use this rule for module placement and imports.
 
+<!-- rule id=api-validation-middleware/put-route-specific-schemas -->
 - Put route-specific schemas from the project's input validation library (for example, zod) and their validation middleware declarations under api/middlewares/validation/, with one module per resource or related route group.
+
+<!-- rule id=api-validation-middleware/export-named-middleware-names -->
 - Export named middleware with names that identify the resource and request part, such as usersQueryValidationMiddleware or feedbackValidationMiddleware.
+
+<!-- rule id=api-validation-middleware/re-export-middleware-api -->
 - Re-export those middleware from api/middlewares/validation/index.js in JavaScript projects or index.ts in TypeScript projects.
-- Import middleware from the validation directory barrel, for example ./middlewares/validation; do not import each resource module directly from route files.
-- Keep the barrel limited to named re-exports. Do not define schemas, add route logic, or call services in index.js / index.ts.
-- Keep route modules responsible for mounting validation, authorization, and handlers. Mount validation before authorization and before any middleware or handler that reads the validated request fields.
-- Match each schema to the exact req.query, req.body, req.params, or client-controlled header properties consumed by its route. Do not add validation for unrelated routes or backend/upstream response payloads.
-- Validate every client-controlled header the route reads with a `headers` schema. Node lowercases incoming header names, so declare header keys in lowercase (`'x-client-version'`, not `'X-Client-Version'`) and use a non-strict `z.object` (never `.strict()`), because the request always carries other headers. The factory never replaces `req.headers`: other middleware still needs `host`, `cookie`, and the rest. It exposes only the parsed header keys in `req.validatedHeaders`; handlers must read validated headers from there, never from `req.headers` or `req.get()`.
-- Before writing a resource validation module, search the project for an existing validation middleware factory (for example, `createValidationMiddleware`, `validateRequest`, or an equivalent wrapper around the input validation library) and reuse it with its existing error contract. Never import a helper path that does not exist yet.
-- If the project has no such factory, first run the Preflight of skill `/api-endpoint` (section `Preflight — Detect the validation library and Express`) so the validation library is declared in `dependencies` (installing a missing library only after the user confirms it, per `established-libraries.md`), then create `utils/validation/index.js` (or `index.ts`) with the implementation below and write the resource modules that import it. When the project organizes code in `src/modules/<feature>/` (see `hexagonal-architecture.md`), place the factory as shared infrastructure (for example, `src/modules/shared/infrastructure/http/validation-middleware.ts`) instead of `utils/validation/`. The implementation uses zod; when the Preflight resolves another library, adapt only its parse call and issue mapping, keeping the error contract below.
+
+<!-- rule id=api-validation-middleware/import-middleware-validation-directory -->
+- Import middleware from the validation directory barrel, for example ./middlewares/validation.
+  - Do not import each resource module directly from route files.
+
+<!-- rule id=api-validation-middleware/keep-barrel-limited-named -->
+- Keep the barrel limited to named re-exports.
+  - Do not define schemas, add route logic, or call services in index.js / index.ts.
+
+<!-- rule id=api-validation-middleware/keep-route-modules-responsible -->
+- Keep route modules responsible for mounting validation, authorization, and handlers.
+  - Mount validation before authorization and before any middleware or handler that reads the validated request fields.
+
+<!-- rule id=api-validation-middleware/match-schema-exact-req -->
+- Match each schema to the exact req.query, req.body, req.params, or client-controlled header properties consumed by its route.
+  - Do not add validation for unrelated routes or backend/upstream response payloads.
+
+<!-- rule id=api-validation-middleware/validate-client-controlled-header -->
+- Validate every client-controlled header the route reads with a `headers` schema.
+  - Node lowercases incoming header names, so declare header keys in lowercase (`'x-client-version'`, not `'X-Client-Version'`) and use a non-strict `z.object` (never `.strict()`), because the request always carries other headers.
+  - The factory never replaces `req.headers`: other middleware still needs `host`, `cookie`, and the rest.
+  - It exposes only the parsed header keys in `req.validatedHeaders`.
+  - Handlers must read validated headers from there, never from `req.headers` or `req.get()`.
+
+<!-- rule id=api-validation-middleware/writing-resource-validation-module -->
+- Before writing a resource validation module, search the project for an existing validation middleware factory (for example, `createValidationMiddleware`, `validateRequest`, or an equivalent wrapper around the input validation library) and reuse it with its existing error contract.
+  - Never import a helper path that does not exist yet.
+
+<!-- rule id=api-validation-middleware/project-has-factory-first -->
+- If the project has no such factory, create `utils/validation/index.js` (or `index.ts`) with the implementation below, and write the resource modules that import it.
+  - First run the Preflight of skill `/api-endpoint` (section `Preflight — Detect the validation library and Express`) so the validation library is declared in `dependencies`.
+  - Install a missing library only after the user confirms it, per `established-libraries.md`.
+  - When the project organizes code in `src/modules/<feature>/` (see `hexagonal-architecture.md`), place the factory as shared infrastructure (for example, `src/modules/shared/infrastructure/http/validation-middleware.ts`) instead of `utils/validation/`.
+  - The implementation uses zod.
+  - When the Preflight resolves another library, adapt only its parse call and issue mapping, keeping the error contract below.
 
 Example layout:
 
