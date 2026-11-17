@@ -85,6 +85,44 @@
           "critical": true
         }
       ]
+    },
+    {
+      "id": "learning-kind-and-existing-key",
+      "description": "Un procedimiento de varios pasos se registra como skill, y una preferencia que ya decide una rule existente reutiliza su key.",
+      "input": "Leé las rules del profile learning. El usuario te dice dos cosas: «Siempre que prepares un informe, hacelo así: primero leés el expediente, después armás la línea de tiempo y al final redactás las conclusiones» y «De ahora en más, las fechas en formato día/mes/año». En .agents/rules/ ya hay una rule con key=dates.format que dice usar el formato ISO. ¿Con qué --kind y qué --key registrás cada una con agent-ready learn record? Respondé desde las rules, sin ejecutar comandos.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "--kind[ =`]*skill|kind[^.]{0,20}skill|skill[^.]{0,60}(informe|procedimiento|pasos)",
+          "description": "El procedimiento de varios pasos va como skill",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "dates.format",
+          "description": "La preferencia de fechas reutiliza la key de la rule existente",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "learning-scope-question-when-ambiguous-and-conflicting",
+      "description": "Ante una instrucción ambigua en su alcance que contradice algo aprendido, el agente hace una sola pregunta de alcance; sin esa contradicción, no pregunta.",
+      "input": "Leé las rules del profile learning. Ya está aprendido que las actas llevan el número de expediente arriba. Ahora el usuario, mientras escribís un acta, te dice: «poné el número de expediente al pie». No dice si es para todas las actas o solo para esta. ¿Le preguntás algo antes de registrarlo? ¿Qué, y cuántas veces como máximo? Respondé desde las rules, sin ejecutar comandos.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(todas|todos los casos|cada caso|siempre)[^?]{0,80}(solo|sólo|únicamente)[^?]{0,40}(esta|este)",
+          "description": "Pregunta si es para todas las actas o solo para esta",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(una (sola )?(vez|pregunta)|como m(a|á)ximo una|a lo sumo una)",
+          "description": "Como máximo una pregunta por episodio",
+          "critical": true
+        }
+      ]
     }
   ]
 }
