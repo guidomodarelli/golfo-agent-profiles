@@ -1,9 +1,13 @@
 {
   "schemaVersion": 1,
   "name": "golfo",
-  "version": "1.2.0",
-  "minEngine": "0.104.0",
+  "version": "1.3.0",
+  "minEngine": "0.122.0",
   "changes": [
+    {
+      "version": "1.3.0",
+      "summary": "Profile learning: el agente registra con agent-ready learn las instrucciones del usuario que deben durar, solo de sus mensajes, con un statement general sin datos del caso; aplica lo aprendido, avisa en una línea y respeta las rules locked. Necesita golfo-kit 0.122.0"
+    },
     {
       "version": "1.2.0",
       "summary": "Rules atómicas: cada bullet de primer nivel de rules/ lleva su comentario <!-- rule id=<archivo>/<slug> -->, con una sola instrucción por statement y el resto en sub-bullets de detalle; agent-ready rules lint --path . pasa sin errores"
@@ -206,6 +210,11 @@
       "kind": "capability",
       "description": "Rules and a design skill for business flows on web and native clients.",
       "assets": "profiles/business-flows"
+    },
+    "learning": {
+      "kind": "capability",
+      "description": "Rules to learn the lasting instructions of the user as rules and skills of the project with agent-ready learn.",
+      "assets": "profiles/learning"
     },
     "browser": {
       "kind": "capability",
