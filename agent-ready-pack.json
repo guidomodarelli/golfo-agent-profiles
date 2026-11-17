@@ -1,9 +1,13 @@
 {
   "schemaVersion": 1,
   "name": "golfo",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "minEngine": "0.104.0",
   "changes": [
+    {
+      "version": "1.2.0",
+      "summary": "Rules atómicas: cada bullet de primer nivel de rules/ lleva su comentario <!-- rule id=<archivo>/<slug> -->, con una sola instrucción por statement y el resto en sub-bullets de detalle; agent-ready rules lint --path . pasa sin errores"
+    },
     {
       "version": "1.1.1",
       "summary": "lodash.md: el ejemplo de isRecord usa isObjectLike, como pide la misma rule, en vez de isPlainObject"

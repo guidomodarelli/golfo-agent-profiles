@@ -171,8 +171,12 @@ To record or refresh a fixture, run the test explicitly with `NOCK_BACK_RECORD=t
 
 Never mock an internal service module. Instead:
 
+<!-- rule id=no-unnecessary-mocks/unit-depends-another-internal -->
 - When the unit depends on **another internal capability with side effects** (writing to a queue, sending a notification), that capability is a domain port: inject a test implementation of the port that records the calls, and assert on what it recorded.
-- When the test needs a **transport failure without an HTTP response** (connection reset, timeout), reproduce it with `nock` (`.replyWithError(...)` or `.delay(...)` with the client's timeout). HTTP error statuses such as 500 or 404 are always covered with a fixture file.
+
+<!-- rule id=no-unnecessary-mocks/test-needs-transport-failure -->
+- When the test needs a **transport failure without an HTTP response** (connection reset, timeout), reproduce it with `nock` (`.replyWithError(...)` or `.delay(...)` with the client's timeout).
+  - HTTP error statuses such as 500 or 404 are always covered with a fixture file.
 
 ### Creating error scenario fixtures manually
 
@@ -205,5 +209,9 @@ Instead of mocking, create the fixture JSON for the error case:
 
 ## References
 
+<!-- rule id=no-unnecessary-mocks/nock-http-interceptor-record -->
 - `nock` — HTTP interceptor with record/replay fixtures (`nock.back`) for service tests, run with Vitest in the `node` environment, or the equivalent tool used by the project (for example `undici`'s `MockAgent`)
-- `vitest` — test runner and the only source of test APIs (`vi.fn`, `vi.useFakeTimers`); `vi.mock` and `vi.spyOn` are not used on the project's own modules
+
+<!-- rule id=no-unnecessary-mocks/vitest-test-runner-source -->
+- `vitest` — test runner and the only source of test APIs (`vi.fn`, `vi.useFakeTimers`).
+  - `vi.mock` and `vi.spyOn` are not used on the project's own modules
