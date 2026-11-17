@@ -6,6 +6,7 @@
 3. The version: a change to the content bumps the version and declares it in ``changes`` (with --base).
 4. The engine: with the agent-ready-setup skill of golfo-kit (--engine), every profile applies in an
    empty repository that takes its content from this commit through ``sources.golfo``.
+5. The rules: ``agent-ready rules lint --path`` of the engine finds no error in the atomic rules of the pack.
 
 Exit codes: 0 everything passed, 1 a check failed, 2 the arguments are wrong.
 """
@@ -45,6 +46,8 @@ SEMVER_PATTERN = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 PACK_URL = "https://github.com/guidomodarelli/golfo-agent-profiles"
 ENGINE_CLI_RELATIVE_PATH = os.path.join("scripts", "agent-ready")
 ENGINE_TIMEOUT_SECONDS = 600
+RULES_LINT_ARGUMENTS = ("rules", "lint", "--json", "--path")
+LINT_ERROR_LEVEL = "error"
 ERROR_TAIL_LINES = 6
 # The fake provider CLIs the engine finds first: the check never starts a real agent.
 PROVIDER_CLIS = ("claude", "codex")
@@ -264,10 +267,7 @@ def apply_problems(engine_dir, pack_dir, catalog, console):
     commit = run_git(pack_dir, ["rev-parse", "HEAD"]).strip()
     if run_git(pack_dir, ["status", "--porcelain", "--"] + list(CONTENT_PATHS)).strip():
         console.state(STATE_WARNING, f"uncommitted changes to the content are not checked: the engine reads commit {commit[:12]}")
-    # Absolute: each apply runs from its own temporary repository.
-    cli = os.path.abspath(os.path.join(engine_dir, ENGINE_CLI_RELATIVE_PATH))
-    if not os.path.isfile(cli):
-        raise CheckError(f"check_pack: {cli} is not the agent-ready CLI; --engine must point to the agent-ready-setup skill")
+    cli = engine_cli(engine_dir)
     problems = []
     work_dir = tempfile.mkdtemp(prefix="pack-check-")
     try:
@@ -294,6 +294,38 @@ def apply_problems(engine_dir, pack_dir, catalog, console):
     return problems
 
 
+def engine_cli(engine_dir):
+    """The agent-ready CLI of an engine, absolute because each apply runs from its own temporary repository."""
+    cli = os.path.abspath(os.path.join(engine_dir, ENGINE_CLI_RELATIVE_PATH))
+    if not os.path.isfile(cli):
+        raise CheckError(f"check_pack: {cli} is not the agent-ready CLI; --engine must point to the agent-ready-setup skill")
+    return cli
+
+
+def rule_problems(engine_dir, pack_dir, console):
+    """The errors of agent-ready rules lint in the rules of the pack: each one is a problem, the warnings are not."""
+    cli = engine_cli(engine_dir)
+    with console.spinner("linting the rules"):
+        completed = subprocess.run([sys.executable, cli, *RULES_LINT_ARGUMENTS, os.path.abspath(pack_dir)],
+                                   cwd=pack_dir, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                                   timeout=ENGINE_TIMEOUT_SECONDS)
+    try:
+        result = json.loads(completed.stdout)
+    except ValueError as parse_error:
+        tail = " | ".join(completed.stderr.strip().splitlines()[-ERROR_TAIL_LINES:])
+        raise CheckError(f"check_pack: agent-ready rules lint gave no JSON (exit {completed.returncode}): {tail}") from parse_error
+    findings = result.get("findings", [])
+    errors = [finding for finding in findings if finding.get("level") == LINT_ERROR_LEVEL]
+    warnings = len(findings) - len(errors)
+    if warnings:
+        console.state(STATE_WARNING, f"{warnings} warning(s) of agent-ready rules lint; they do not fail the check")
+    if not errors:
+        console.state(STATE_DONE, f"{result.get('rules', 0)} atomic rules, no lint error")
+    named = [f" {finding['rule']}" if finding.get("rule") else "" for finding in errors]
+    return [f"{finding['path']}:{finding['line']}: [{finding['code']}]{name}: {finding['message']}"
+            for finding, name in zip(errors, named)]
+
+
 def report(console, problems):
     for problem in problems:
         console.state(STATE_ERROR, problem)
@@ -313,7 +345,7 @@ def parse_arguments(argv):
 def main(argv=None, console=None):
     arguments = parse_arguments(argv)
     console = console or Console()
-    total = 4
+    total = 5
     problems = []
     console.banner("golfo content pack", f"Checking {os.path.abspath(arguments.pack)}")
     try:
@@ -341,6 +373,14 @@ def main(argv=None, console=None):
             problems += apply_problems(arguments.engine, arguments.pack, catalog, console)
         else:
             console.state(STATE_SKIPPED, "no --engine: the profiles are not applied")
+        console.step(5, total, "Rules")
+        if arguments.engine:
+            found = rule_problems(arguments.engine, arguments.pack, console)
+            for problem in found:
+                console.state(STATE_ERROR, problem)
+            problems += found
+        else:
+            console.state(STATE_SKIPPED, "no --engine: the rules are not linted")
     except (CheckError, subprocess.SubprocessError, OSError) as check_error:
         console.failure(str(check_error))
         return EXIT_FAILURE
