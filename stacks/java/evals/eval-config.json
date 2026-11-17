@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "skill": "java-rules",
+  "description": "Evalúa las rules de Java: los tests de integración no mockean la propia capa de datos.",
+  "test_cases": [
+    {
+      "id": "java-rule-integration-tests-keep-own-database-layer",
+      "description": "La rule de testing de Java no mockea la capa de base de datos propia y remite a patterns-we-do-not-use.md.",
+      "input": "Leé las rules de testing del stack java. En un servicio Spring, ¿puedo mockear mi repositorio JPA en los tests de integración? Decime qué piden las rules y qué archivo citan. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "patterns-we-do-not-use.md",
+          "description": "Cita la sección Data de patterns-we-do-not-use.md",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "Testcontainers",
+          "description": "Usa Testcontainers o la base de test del proyecto",
+          "critical": false
+        }
+      ]
+    }
+  ]
+}

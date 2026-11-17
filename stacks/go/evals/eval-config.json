@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "skill": "go-rules",
+  "description": "Evalúa las rules de Go: el error del servidor se registra como define error-handling.md.",
+  "test_cases": [
+    {
+      "id": "go-rule-server-errors-follow-diagnosable-failures",
+      "description": "La rule de seguridad de Go devuelve un mensaje seguro al cliente y registra la falla según Diagnosable failures.",
+      "input": "Leé las rules de seguridad del stack go. Un handler HTTP de mi servicio Go falla al consultar la base: ¿qué le devuelvo al cliente y cómo registro el error en el servidor? Decime qué sección de qué archivo citan las rules. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "error-handling.md",
+          "description": "Remite a error-handling.md",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "Diagnosable failures",
+          "description": "Nombra la sección Diagnosable failures",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}

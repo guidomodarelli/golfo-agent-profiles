@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "skill": "business-flows-rules",
+  "description": "Evalúa las rules de business-flows: el flujo se diseña con su skill y cada paso emite su evento.",
+  "test_cases": [
+    {
+      "id": "business-flow-rule-new-step-uses-design-skill",
+      "description": "Antes de cambiar los pasos de un flujo, la rule pide seguir la skill de diseño de flujos y medir cada paso.",
+      "input": "Leé las rules del profile business-flows. Voy a agregar un paso nuevo a un checkout que usan la web y la app Android. ¿Qué tengo que hacer antes de cambiar los pasos, qué evento emito en cada paso y con qué datos? No ejecutes Bash ni escribas archivos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "business-flow-design",
+          "description": "Sigue la skill business-flow-design antes de cambiar los pasos",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "[Vv]ersi(o|ó)n",
+          "description": "El evento lleva el identificador de versión del flujo",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}
