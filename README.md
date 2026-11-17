@@ -7,7 +7,7 @@ El motor (scripts, hooks, settings, profiles de CI) vive en golfo-kit. Ac√° est√
 - las rules y skills comunes;
 - el template de `AGENTS.md`;
 - los stacks (`node`, `react`, `nextjs`, `nextjs-app-router`, `java`, `go`, `android`);
-- las capabilities (`software-development`, `business-flows`, `browser`).
+- las capabilities (`software-development`, `business-flows`, `browser`, `learning`).
 
 ## Usarlo
 
