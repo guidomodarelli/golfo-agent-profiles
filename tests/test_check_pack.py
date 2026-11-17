@@ -181,6 +181,47 @@ class ApplyProblemsTest(unittest.TestCase):
         self.assertEqual(problems, [])
 
 
+def write_fake_engine(root, lint_result):
+    """An engine whose CLI answers agent-ready rules lint with ``lint_result`` as its JSON."""
+    os.makedirs(os.path.join(root, "engine", "scripts"))
+    with open(os.path.join(root, "engine", "scripts", "agent-ready"), "w", encoding="utf-8") as file_handle:
+        file_handle.write("import json, sys\nprint(json.dumps(%r))\nsys.exit(1 if %r else 0)\n"
+                          % (lint_result, any(finding["level"] == "error" for finding in lint_result["findings"])))
+    return os.path.join(root, "engine")
+
+
+class RuleProblemsTest(unittest.TestCase):
+    def test_each_lint_error_is_a_problem_and_a_warning_is_not(self):
+        root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, root)
+        engine = write_fake_engine(root, {"rules": 2, "errors": 1, "warnings": 1, "findings": [
+            {"level": "error", "code": "untagged-rule", "path": "stacks/node/rules/node-testing.md", "line": 4,
+             "rule": None, "message": "a top-level bullet without a marker"},
+            {"level": "warning", "code": "statement-long", "path": "base/rules/verify-changes.md", "line": 9,
+             "rule": "verify-changes/report", "message": "the statement is long"}]})
+        stream = io.StringIO()
+        problems = check_pack.rule_problems(engine, PACK_ROOT, console_output.Console(stream=stream))
+        self.assertEqual(problems, ["stacks/node/rules/node-testing.md:4: [untagged-rule]: a top-level bullet without a marker"])
+        self.assertIn("1 warning(s) of agent-ready rules lint", stream.getvalue())
+
+    def test_a_pack_without_lint_errors_has_no_problems(self):
+        root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, root)
+        engine = write_fake_engine(root, {"rules": 3, "errors": 0, "warnings": 0, "findings": []})
+        stream = io.StringIO()
+        self.assertEqual(check_pack.rule_problems(engine, PACK_ROOT, console_output.Console(stream=stream)), [])
+        self.assertIn("3 atomic rules, no lint error", stream.getvalue())
+
+    def test_an_engine_that_gives_no_json_stops_the_check(self):
+        root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, root)
+        os.makedirs(os.path.join(root, "engine", "scripts"))
+        with open(os.path.join(root, "engine", "scripts", "agent-ready"), "w", encoding="utf-8") as file_handle:
+            file_handle.write("import sys\nsys.stderr.write('unknown command rules\\n')\nsys.exit(2)\n")
+        with self.assertRaises(check_pack.CheckError):
+            check_pack.rule_problems(os.path.join(root, "engine"), PACK_ROOT, console_output.Console(stream=io.StringIO()))
+
+
 class MainTest(unittest.TestCase):
     def test_a_pack_with_a_broken_skill_exits_with_one(self):
         root = tempfile.mkdtemp()
