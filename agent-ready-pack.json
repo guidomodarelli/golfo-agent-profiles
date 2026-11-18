@@ -1,9 +1,13 @@
 {
   "schemaVersion": 1,
   "name": "golfo",
-  "version": "1.3.0",
-  "minEngine": "0.122.0",
+  "version": "1.4.0",
+  "minEngine": "0.123.0",
   "changes": [
+    {
+      "version": "1.4.0",
+      "summary": "Profile learning: el agente pasa en --episode el episodio que anuncia el hook del prompt, vuelve a registrar una instrucción pendiente cuando el usuario la repite y registra la pregunta de alcance con agent-ready learn episode --scope-question, que impide una segunda en el mismo episodio. Necesita golfo-kit 0.123.0"
+    },
     {
       "version": "1.3.0",
       "summary": "Profile learning: el agente registra con agent-ready learn las instrucciones del usuario que deben durar, solo de sus mensajes, con un statement general sin datos del caso; aplica lo aprendido, avisa en una línea y respeta las rules locked. Necesita golfo-kit 0.122.0"

@@ -123,6 +123,31 @@
           "critical": true
         }
       ]
+    },
+    {
+      "id": "learning-second-scope-question-is-refused",
+      "description": "La pregunta de alcance se registra con learn episode --scope-question; si falla porque ya se hizo en el episodio, no se pregunta otra vez: se aplica solo al documento actual y se registra sin --explicit.",
+      "input": "Leé las rules del profile learning. En esta sesión (id s7) ya le preguntaste al usuario si una instrucción era para todas las actas o solo para una. Ahora, en el mismo episodio s7:20260310T090000, te da otra instrucción ambigua que contradice algo aprendido: «poné la fecha al final». Corriste `agent-ready learn episode --session s7 --scope-question` y respondió: «the scope question of this episode was already asked». ¿Le preguntás el alcance? ¿Qué hacés con la instrucción y cómo la registrás? Respondé desde las rules, sin ejecutar comandos.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(no (le |se )?(pregunt(o|ás|as|a)|vuelvo a preguntar|volvés a preguntar|hago (otra|la) pregunta|hacés (otra|la) pregunta)|sin preguntar|ni (una )?pregunta)",
+          "description": "No hace una segunda pregunta de alcance en el episodio",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(solo|sólo|únicamente)[^.]{0,60}(documento|acta)[^.]{0,30}(actual|esta|este)|(documento|acta) actual",
+          "description": "Aplica la instrucción solo al documento actual",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "sin[^.]{0,20}--explicit|no[^.]{0,40}--explicit",
+          "description": "La registra sin --explicit",
+          "critical": true
+        }
+      ]
     }
   ]
 }

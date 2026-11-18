@@ -9,7 +9,8 @@ The agent learns how the user wants things done: an instruction that should last
 <!-- rule id=learning/record-lasting-instructions -->
 - Record with `agent-ready learn record` every instruction of the user that should last: one said with «always», «from now on» or «never», or a correction of how you did something.
   - Pass `--explicit` when the user asked for it to last; a correction without it waits for another episode.
-  - Pass `--session` with the id of this session, and `--episode` when the session start gave one.
+  - Pass `--session` with the id of this session, and `--episode` with the episode that the hook of the prompt announced («Episode <id> started»); `agent-ready learn episode --session <id>` shows the current one.
+  - When the user repeats an instruction listed as waiting for another episode in the summary of the session start, record it again: a new episode is the evidence it waits for.
   - A request about one document only («in this record, put the date first») is not recorded.
 
 <!-- rule id=learning/general-statement -->
@@ -35,5 +36,5 @@ The agent learns how the user wants things done: an instruction that should last
 
 <!-- rule id=learning/scope-question -->
 - Ask whether an instruction is for every case or only this one only when its scope is ambiguous and it contradicts something learned or a rule of a profile.
-  - At most one such question per episode.
+  - At most one such question per episode. Before asking, run `agent-ready learn episode --session <id> --scope-question`: when it fails, the question of this episode was already asked, so do not ask, apply the instruction to the current document only and record it without `--explicit`.
   - «For every case» is recorded with `--explicit`; «only this one» applies to the current document and is not recorded.
