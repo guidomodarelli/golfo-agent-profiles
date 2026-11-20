@@ -1,0 +1,91 @@
+{
+  "schema_version": 2,
+  "skill": "karpathy-guidelines",
+  "description": "Evalúa los cuatro principios de la skill en pedidos de código React y TypeScript: plan con verificación por paso, bug arreglado con un test que lo reproduce, cambio quirúrgico que nombra el código muerto ajeno sin borrarlo y pedido ambiguo con sus interpretaciones.",
+  "test_cases": [
+    {
+      "id": "multi-step-plan-with-verify-checks",
+      "description": "Goal-Driven Execution: una tarea de varios pasos sale como plan con una verificación por paso",
+      "input": "En una app React con TypeScript tengo que hacer tres cosas en `RegisterForm.tsx`: validar el formato del email, mostrar el error debajo del campo y que el botón «Crear cuenta» siga deshabilitado mientras haya errores. Todavía no escribas código: dame el plan de trabajo. No ejecutes comandos.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "[Vv]erif(y|ica|ico|icar|icación|ication)(\\*|_)*:",
+          "description": "Cada paso del plan lleva su verificación con una etiqueta propia («verify:», «Verifica:» o «Verifico:»), en la línea del paso o en un sub-bullet",
+          "critical": false
+        }
+      ]
+    },
+    {
+      "id": "bug-fix-starts-with-failing-test",
+      "description": "Goal-Driven Execution: arreglar un bug empieza por un test que lo reproduce",
+      "input": "Bug en `src/utils/formatPrice.ts`:\n\n```ts\nexport function formatPrice(cents: number): string {\n  if (!cents) return '';\n  return `$${(cents / 100).toFixed(2)}`;\n}\n```\n\n`formatPrice(0)` devuelve un string vacío y el carrito muestra el precio en blanco; tendría que devolver `$0.00`. El proyecto usa Vitest. Arreglalo y mostrame los archivos que cambiás. No ejecutes comandos.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(it|test)\\([\"'`].*0",
+          "description": "Escribe un test con el caso de 0 que reproduce el bug",
+          "critical": false
+        },
+        {
+          "type": "contains",
+          "value": "formatPrice(0)",
+          "description": "El test llama a formatPrice(0)",
+          "critical": false
+        }
+      ],
+      "control": "Sin la skill el modelo ya suele escribir el test del caso de 0 junto con el fix (2/3 en la baseline): cuida que la skill no lo contradiga"
+    },
+    {
+      "id": "surgical-change-names-unrelated-dead-code",
+      "description": "Surgical Changes: arregla solo lo pedido y nombra el código muerto ajeno sin borrarlo",
+      "input": "Arreglá el bug de `getInitials`: con un nombre que tiene dos espacios seguidos (`'Ana  Pérez'`) devuelve `'A'` en vez de `'AP'`. Mostrame el archivo completo como queda. No ejecutes comandos.\n\n```ts\n// src/utils/user.ts\nexport function getInitials(fullName: string): string {\n  return fullName\n    .split(' ')\n    .map((part) => part[0])\n    .join('')\n    .toUpperCase();\n}\n\nexport function legacyDisplayName(user: { first: string; last: string }): string {\n  return user.first + ' ' + user.last;\n}\n```\n\n`legacyDisplayName` no se importa en ningún lado del proyecto.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "export function legacyDisplayName",
+          "description": "Deja legacyDisplayName en el archivo: no borra código muerto que el pedido no tocó",
+          "critical": false
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "no se usa",
+            "sin uso",
+            "no se importa",
+            "código muerto",
+            "codigo muerto",
+            "dead code",
+            "unused"
+          ],
+          "description": "Menciona que legacyDisplayName parece no usarse, en vez de callarlo o borrarlo",
+          "critical": false
+        }
+      ],
+      "control": "Sin la skill el modelo ya suele dejar legacyDisplayName y mencionar que no se usa (2/3 en la baseline): cuida que la skill no lo contradiga"
+    },
+    {
+      "id": "ambiguous-request-lists-interpretations",
+      "description": "Think Before Coding: un pedido ambiguo se responde con sus interpretaciones antes de elegir una",
+      "input": "Hacé que la lista de productos de la app React sea más rápida. Es `ProductList.tsx`, que renderiza unos 5.000 productos que trae de `/api/products`. No ejecutes comandos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "interpretaci",
+            "¿Te referís",
+            "¿te referís",
+            "¿Qué querés decir",
+            "puede significar",
+            "puede referirse",
+            "dos cosas distintas",
+            "depende de qué",
+            "¿Cuál de"
+          ],
+          "description": "Explicita que «más rápida» admite varias lecturas (carga de datos, render, scroll) en vez de elegir una en silencio",
+          "critical": false
+        }
+      ]
+    }
+  ]
+}
