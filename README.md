@@ -1,8 +1,8 @@
 # golfo-agent-profiles
 
-Pack oficial de contenido de [agent-ready-setup](https://github.com/guidomodarelli/golfo-marketplace/tree/main/plugins/golfo-kit/skills/agent-ready-setup), la skill de golfo-kit que deja un repositorio listo para Claude Code y Codex.
+Pack oficial de contenido de [agent-ready-setup](https://github.com/guidomodarelli/golfo-marketplace/tree/main/plugins/golfo-agent-ready/skills/agent-ready-setup), la skill de golfo-agent-ready que deja un repositorio listo para Claude Code y Codex.
 
-El motor (scripts, hooks, settings, profiles de CI) vive en golfo-kit. Acá está lo que proyecta:
+El motor (scripts, hooks, settings, profiles de CI) vive en golfo-agent-ready. Acá está lo que proyecta:
 
 - las rules y skills comunes;
 - el template de `AGENTS.md`;
@@ -11,7 +11,7 @@ El motor (scripts, hooks, settings, profiles de CI) vive en golfo-kit. Acá est�
 
 ## Usarlo
 
-Es la fuente de contenido por defecto de agent-ready-setup (`sources.golfo`, golfo-kit 0.90.0 o más nuevo): un repositorio que
+Es la fuente de contenido por defecto de agent-ready-setup (`sources.golfo`, motor 0.90.0 o más nuevo): un repositorio que
 no declara nada lo usa siguiendo `main`. Para fijarlo a una versión, en `.agents/agent-ready.json`:
 
 ```json

@@ -4,7 +4,7 @@
 1. The catalog: agent-ready-pack.json with its version, its base and its profiles.
 2. The skills: each SKILL.md follows the Agent Skills specification.
 3. The version: a change to the content bumps the version and declares it in ``changes`` (with --base).
-4. The engine: with the agent-ready-setup skill of golfo-kit (--engine), every profile applies in an
+4. The engine: with the agent-ready-setup skill of golfo-agent-ready (--engine), every profile applies in an
    empty repository that takes its content from this commit through ``sources.golfo``.
 5. The rules: ``agent-ready rules lint --path`` of the engine finds no error in the atomic rules of the pack.
 
@@ -338,7 +338,7 @@ def parse_arguments(argv):
     parser.add_argument("--pack", default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                         help="root of the pack (default: this repository)")
     parser.add_argument("--base", help="Git ref to compare the version with, such as origin/main")
-    parser.add_argument("--engine", help="the agent-ready-setup skill of golfo-kit that applies each profile")
+    parser.add_argument("--engine", help="the agent-ready-setup skill of golfo-agent-ready that applies each profile")
     return parser.parse_args(argv)
 
 

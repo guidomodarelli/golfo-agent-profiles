@@ -23,7 +23,7 @@ jobs:
         with:
           path: pack
           fetch-depth: 0
-      # The engine that projects this content: agent-ready-setup of golfo-kit, from the marketplace.
+      # The engine that projects this content: agent-ready-setup of golfo-agent-ready, from the marketplace.
       - uses: actions/checkout@v4
         with:
           repository: guidomodarelli/golfo-marketplace
@@ -39,7 +39,7 @@ jobs:
         working-directory: pack
         env:
           BASE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || '' }}
-          ENGINE_DIR: ${{ github.workspace }}/marketplace/plugins/golfo-kit/skills/agent-ready-setup
+          ENGINE_DIR: ${{ github.workspace }}/marketplace/plugins/golfo-agent-ready/skills/agent-ready-setup
         run: |
           arguments=(--engine "$ENGINE_DIR")
           if [[ -n "$BASE_REF" ]]; then
