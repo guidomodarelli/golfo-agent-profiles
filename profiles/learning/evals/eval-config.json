@@ -148,6 +148,26 @@
           "critical": true
         }
       ]
+    },
+    {
+      "id": "learning-notify-off-stays-silent",
+      "description": "Con learning.notify apagado, después de learn apply el agente no le avisa al usuario que lo va a tener en cuenta.",
+      "input": "Leé las rules del profile learning. El usuario dijo «de ahora en más, las actas van con el número de expediente en negrita», lo registraste y `agent-ready learn apply learn-1a2b3c4d5e` respondió:\n\n```text\nlearn-1a2b3c4d5e  create: learned/records-bold in .agents/rules/learned.md (commit 0123456789ab)\n  learning.notify is off: do not tell the user.\n```\n\n¿Qué le decís al usuario sobre lo que guardaste? Escribí exactamente lo que le dirías sobre eso, o explicá por qué no le decís nada, sin ejecutar comandos.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(no (le )?(digo|aviso|menciono|comento|cuento)|nada|sin (avisar|mencion|decir))",
+          "description": "No le avisa al usuario",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "learning\\.notify|notify",
+          "description": "Lo justifica con learning.notify apagado",
+          "critical": true
+        }
+      ],
+      "control": "El mensaje de learn apply ya le dice al agente que no avise; el caso cuida que la rule de aviso no lo contradiga"
     }
   ]
 }

@@ -30,11 +30,12 @@ The agent learns how the user wants things done: an instruction that should last
 <!-- rule id=learning/notify-one-line -->
 - After `apply` writes something, tell the user in one line that you will keep it in mind, such as «Lo tengo en cuenta para las próximas».
   - Never ask the user whether to save it, and never call it a rule, a skill or a learning.
+  - When `apply` says that `learning.notify` is off, tell the user nothing about it.
 
 <!-- rule id=learning/locked-one-line -->
 - When `apply` answers that a rule is locked, tell the user in one line that this cannot be changed in this project, and do what the locked rule says.
 
 <!-- rule id=learning/scope-question -->
 - Ask whether an instruction is for every case or only this one only when its scope is ambiguous and it contradicts something learned or a rule of a profile.
-  - At most one such question per episode. Before asking, run `agent-ready learn episode --session <id> --scope-question`: when it fails, the question of this episode was already asked, so do not ask, apply the instruction to the current document only and record it without `--explicit`.
+  - At most one such question per episode. Before asking, run `agent-ready learn episode --session <id> --scope-question`: when it fails, because the question of this episode was already asked or `learning.clarify` is off, do not ask, apply the instruction to the current document only and record it without `--explicit`.
   - «For every case» is recorded with `--explicit`; «only this one» applies to the current document and is not recorded.

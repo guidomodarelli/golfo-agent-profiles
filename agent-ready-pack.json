@@ -1,9 +1,13 @@
 {
   "schemaVersion": 1,
   "name": "golfo",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "minEngine": "0.123.0",
   "changes": [
+    {
+      "version": "1.5.0",
+      "summary": "Profile learning: el agente no avisa lo que aprendió cuando agent-ready learn apply dice que learning.notify está apagado, y no hace la pregunta de alcance cuando learn episode --scope-question falla porque learning.clarify es off. Las dos claves llegan con golfo-agent-ready 0.138.0; con un motor anterior el profile se comporta como 1.4.0"
+    },
     {
       "version": "1.4.0",
       "summary": "Profile learning: el agente pasa en --episode el episodio que anuncia el hook del prompt, vuelve a registrar una instrucción pendiente cuando el usuario la repite y registra la pregunta de alcance con agent-ready learn episode --scope-question, que impide una segunda en el mismo episodio. Necesita golfo-kit 0.123.0"
