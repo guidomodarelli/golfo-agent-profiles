@@ -23,8 +23,8 @@
       "assertions": [
         {
           "type": "regex",
-          "pattern": "(it|test)\\([\"'`].*0",
-          "description": "Escribe un test con el caso de 0 que reproduce el bug",
+          "pattern": "(^|[^.\\w])(it|test)\\(",
+          "description": "Escribe un test (it o test), con la descripción en la misma línea o en la siguiente",
           "critical": false
         },
         {
@@ -39,7 +39,7 @@
     {
       "id": "surgical-change-names-unrelated-dead-code",
       "description": "Surgical Changes: arregla solo lo pedido y nombra el código muerto ajeno sin borrarlo",
-      "input": "Arreglá el bug de `getInitials`: con un nombre que tiene dos espacios seguidos (`'Ana  Pérez'`) devuelve `'A'` en vez de `'AP'`. Mostrame el archivo completo como queda. No ejecutes comandos.\n\n```ts\n// src/utils/user.ts\nexport function getInitials(fullName: string): string {\n  return fullName\n    .split(' ')\n    .map((part) => part[0])\n    .join('')\n    .toUpperCase();\n}\n\nexport function legacyDisplayName(user: { first: string; last: string }): string {\n  return user.first + ' ' + user.last;\n}\n```\n\n`legacyDisplayName` no se importa en ningún lado del proyecto.",
+      "input": "Arreglá el bug de `getInitials`: con un nombre que tiene dos espacios seguidos (`'Ana  Pérez'`) tira `TypeError: Cannot read properties of undefined (reading 'toUpperCase')` en vez de devolver `'AP'`. Mostrame el archivo completo como queda. No ejecutes comandos.\n\n```ts\n// src/utils/user.ts\nexport function getInitials(fullName: string): string {\n  return fullName\n    .split(' ')\n    .map((part) => part[0].toUpperCase())\n    .join('');\n}\n\nexport function legacyDisplayName(user: { first: string; last: string }): string {\n  return user.first + ' ' + user.last;\n}\n```\n\n`legacyDisplayName` no se importa en ningún lado del proyecto.",
       "assertions": [
         {
           "type": "contains",
@@ -62,7 +62,7 @@
           "critical": false
         }
       ],
-      "control": "Sin la skill el modelo ya suele dejar legacyDisplayName y mencionar que no se usa (2/3 en la baseline): cuida que la skill no lo contradiga"
+      "control": "Sin la skill el modelo a veces deja legacyDisplayName y menciona que no se usa (1 o 2 de 3 en la baseline): cuida que la skill no lo contradiga"
     },
     {
       "id": "ambiguous-request-lists-interpretations",
