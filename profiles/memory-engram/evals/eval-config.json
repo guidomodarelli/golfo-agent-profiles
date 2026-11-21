@@ -16,7 +16,7 @@
         },
         {
           "type": "regex",
-          "pattern": "(no|nunca)[^.\\n]{0,80}(Engram|mem_save)|(Engram|mem_save)[^.\\n]{0,80}(no|nunca)[^.\\n]{0,40}(va|corresponde|guard|es para)",
+          "pattern": "([Nn]o|[Nn]unca)[^.]{0,80}(Engram|mem_save)|(Engram|mem_save)[^.]{0,80}([Nn]o|[Nn]unca)[^.]{0,40}(va|corresponde|guard|es para)",
           "description": "Dice que no va a Engram",
           "critical": true
         }
@@ -35,7 +35,7 @@
         },
         {
           "type": "regex",
-          "pattern": "(no|nunca)[^.\\n]{0,80}(learn record|una rule|regla|aprendizaje)",
+          "pattern": "([Nn]o|[Nn]unca)[^.]{0,80}(learn record|una rule|regla|aprendizaje)",
           "description": "Aclara que no es una rule ni va al aprendizaje",
           "critical": false
         }
@@ -67,7 +67,7 @@
       "assertions": [
         {
           "type": "regex",
-          "pattern": "(no|nunca)[^.\\n]{0,80}(guard|mem_save|Engram)",
+          "pattern": "([Nn]o|[Nn]unca)[^.]{0,80}(guard|mem_save|Engram)",
           "description": "No la guarda en Engram",
           "critical": true
         },
@@ -87,13 +87,13 @@
       "assertions": [
         {
           "type": "regex",
-          "pattern": "(no|nunca)[^.\\n]{0,80}(archivo|NOTES\\.md|escrib)",
+          "pattern": "([Nn]o|[Nn]unca)[^.]{0,80}(archivo|NOTES\\.md|escrib)",
           "description": "No escribe la memoria en un archivo del repo",
           "critical": true
         },
         {
           "type": "regex",
-          "pattern": "(memoria|Engram)[^.\\n]{0,80}(apagad|no est[aá] disponible|no disponible|desactivad|no funciona)",
+          "pattern": "(memoria|Engram)[^.]{0,80}(apagad|no est[aá] disponible|no disponible|desactivad|no funciona)",
           "description": "Le dice al usuario que la memoria no está disponible en esta sesión",
           "critical": true
         }
