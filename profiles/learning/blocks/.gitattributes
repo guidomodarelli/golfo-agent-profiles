@@ -1,0 +1,5 @@
+# The merge drivers of agent-ready (agent-ready apply registers them in .git/config): two people who
+# learned different rules, or evidence of the same one, integrate by rule, by entry and by line of the log.
+.agents/rules/**/*.md merge=agent-ready-rules
+.agents/learning/candidates.json merge=agent-ready-candidates
+.agents/learning/log.md merge=agent-ready-log
