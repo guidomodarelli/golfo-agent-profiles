@@ -1,9 +1,13 @@
 {
   "schemaVersion": 1,
   "name": "golfo",
-  "version": "1.5.0",
-  "minEngine": "0.123.0",
+  "version": "1.6.0",
+  "minEngine": "0.142.0",
   "changes": [
+    {
+      "version": "1.6.0",
+      "summary": "Profile memory-engram: instala Engram 3.7.1 (versión exacta y sha256 por plataforma), registra su servidor MCP con agent-ready tool run y trae la rule de memoria: los hechos de cada caso van a Engram y cómo trabajar va al aprendizaje. El .gitignore gestionado ignora .engram/. Necesita golfo-agent-ready 0.142.0, que trae el profile a toda selección mientras memory.engram esté encendida"
+    },
     {
       "version": "1.5.0",
       "summary": "Profile learning: el agente no avisa lo que aprendió cuando agent-ready learn apply dice que learning.notify está apagado, y no hace la pregunta de alcance cuando learn episode --scope-question falla porque learning.clarify es off. Las dos claves llegan con golfo-agent-ready 0.138.0; con un motor anterior el profile se comporta como 1.4.0"
@@ -248,6 +252,58 @@
             ]
           }
         ]
+      }
+    },
+    "memory-engram": {
+      "kind": "capability",
+      "description": "Engram, the persistent memory of facts and context of each project (people, clients, cases and their decisions), with its MCP server and the rule of when to save and when to search; the engine brings it to every selection while memory.engram is on.",
+      "assets": "profiles/memory-engram",
+      "clis": [
+        {
+          "name": "engram",
+          "version": "3.7.1",
+          "artifacts": [
+            {
+              "platform": "linux-x64",
+              "url": "https://github.com/Gentleman-Programming/engram/releases/download/v3.7.1/engram_3.7.1_linux_amd64.tar.gz",
+              "sha256": "bc1acef625f16923b2ba548e0c911996b30d65c7c7cf15e949ecbc58136b127b"
+            },
+            {
+              "platform": "linux-arm64",
+              "url": "https://github.com/Gentleman-Programming/engram/releases/download/v3.7.1/engram_3.7.1_linux_arm64.tar.gz",
+              "sha256": "d5023e786af7cefe07a5d46f8064851d5f89be73bdb10af4a148358ed0605583"
+            },
+            {
+              "platform": "darwin-x64",
+              "url": "https://github.com/Gentleman-Programming/engram/releases/download/v3.7.1/engram_3.7.1_darwin_amd64.tar.gz",
+              "sha256": "7dfa0ddcf8ede0ad7be53913ee7bf83a4f6e89a419db8c02559fa3e3df848579"
+            },
+            {
+              "platform": "darwin-arm64",
+              "url": "https://github.com/Gentleman-Programming/engram/releases/download/v3.7.1/engram_3.7.1_darwin_arm64.tar.gz",
+              "sha256": "d1979720dd2f0f240c2ce1544051866155d709b58b30575f617ea4ea5b8f49ca"
+            },
+            {
+              "platform": "windows-x64",
+              "url": "https://github.com/Gentleman-Programming/engram/releases/download/v3.7.1/engram_3.7.1_windows_amd64.zip",
+              "sha256": "715b6ba35013c853e3607afefdf211923a5d3bef5894b77a55fe2a306b2b05e9"
+            },
+            {
+              "platform": "windows-arm64",
+              "url": "https://github.com/Gentleman-Programming/engram/releases/download/v3.7.1/engram_3.7.1_windows_arm64.zip",
+              "sha256": "ab78c9dabeb0438d9a4712926b40b5354e014b13867f3f3a08d7983087a96114"
+            }
+          ]
+        }
+      ],
+      "mcpServers": {
+        "engram": {
+          "cli": "engram",
+          "args": [
+            "mcp",
+            "--tools=agent"
+          ]
+        }
       }
     }
   }

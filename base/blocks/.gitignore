@@ -3,3 +3,6 @@
 .agents/.agent-ready-assets.lock/
 .agents/browser-tools.json
 .claude/.agent-ready-hard-link-views
+
+# The memory of Engram stays on the machine of the user: engram sync would write it here for Git.
+.engram/

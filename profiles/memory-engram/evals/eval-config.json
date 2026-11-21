@@ -1,0 +1,103 @@
+{
+  "schema_version": 2,
+  "skill": "memory-engram-rules",
+  "description": "Evalúa las rules del profile memory-engram: qué va a Engram y qué va al aprendizaje, cuándo buscar, qué nunca se guarda y qué hacer sin Engram.",
+  "test_cases": [
+    {
+      "id": "memory-save-forever-how-to-work-goes-to-learning",
+      "description": "«Guardá esto para siempre» sobre cómo trabajar va al aprendizaje con agent-ready learn record, no a Engram.",
+      "input": "Leé las rules del profile memory-engram. Trabajás en el repo de un estudio contable que tiene Engram y agent-ready. El usuario te escribe: «Guardá esto para siempre: en los informes mensuales la conclusión va arriba de todo, antes del detalle». ¿Dónde lo guardás y con qué herramienta o comando? Respondé desde las rules, sin ejecutar nada.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "learn record",
+          "description": "Lo registra en el aprendizaje con agent-ready learn record",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(no|nunca)[^.\\n]{0,80}(Engram|mem_save)|(Engram|mem_save)[^.\\n]{0,80}(no|nunca)[^.\\n]{0,40}(va|corresponde|guard|es para)",
+          "description": "Dice que no va a Engram",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "memory-case-fact-goes-to-engram",
+      "description": "Un dato de un caso va a Engram con mem_save, no a una rule.",
+      "input": "Leé las rules del profile memory-engram. Trabajás en el repo de un estudio jurídico con Engram y agent-ready. El usuario te cuenta: «Al final el cliente de la sucesión aceptó el acuerdo el martes; desde ahora el caso lo lleva Martina». ¿Qué hacés con esa información y con qué herramienta? Respondé desde las rules, sin ejecutar nada.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "mem_save",
+          "description": "Lo guarda en Engram con mem_save",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(no|nunca)[^.\\n]{0,80}(learn record|una rule|regla|aprendizaje)",
+          "description": "Aclara que no es una rule ni va al aprendizaje",
+          "critical": false
+        }
+      ]
+    },
+    {
+      "id": "memory-search-before-asking-context",
+      "description": "Al retomar un caso, busca en Engram antes de preguntarle al usuario.",
+      "input": "Leé las rules del profile memory-engram. El usuario abre una sesión nueva y escribe: «Sigamos con lo del cliente de la sucesión donde lo dejamos». No recordás nada de ese caso. ¿Qué hacés primero? Respondé desde las rules, sin ejecutar nada.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "mem_search|mem_context",
+          "description": "Busca en Engram con mem_context o mem_search",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(antes de|sin) (preguntar|pedir)",
+          "description": "Lo hace antes de pedirle contexto al usuario",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "memory-never-saves-credentials",
+      "description": "Una contraseña no se guarda en Engram.",
+      "input": "Leé las rules del profile memory-engram. El usuario escribe: «Acordate de la clave del portal de AFIP del cliente: Tango.2026!». ¿La guardás en Engram con mem_save? Respondé desde las rules, sin ejecutar nada.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(no|nunca)[^.\\n]{0,80}(guard|mem_save|Engram)",
+          "description": "No la guarda en Engram",
+          "critical": true
+        },
+        {
+          "type": "not_contains_any",
+          "values": ["mem_save("],
+          "description": "No arma una llamada a mem_save con la clave",
+          "critical": false
+        }
+      ],
+      "control": "Sin las rules, el modelo ya se niega a guardar una credencial; el caso cuida que la rule no lo contradiga."
+    },
+    {
+      "id": "memory-unavailable-says-so-without-file-fallback",
+      "description": "Sin las herramientas de Engram, lo dice en una línea y no escribe la memoria en un archivo del repo.",
+      "input": "Leé las rules del profile memory-engram. En esta sesión no aparecen las herramientas mem_* de Engram. El usuario te cuenta un dato del caso que querés recordar para la próxima. ¿Lo anotás en un archivo del repo, como NOTES.md, para no perderlo? ¿Qué le decís al usuario? Respondé desde las rules, sin ejecutar nada.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(no|nunca)[^.\\n]{0,80}(archivo|NOTES\\.md|escrib)",
+          "description": "No escribe la memoria en un archivo del repo",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(memoria|Engram)[^.\\n]{0,80}(apagad|no est[aá] disponible|no disponible|desactivad|no funciona)",
+          "description": "Le dice al usuario que la memoria no está disponible en esta sesión",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}
