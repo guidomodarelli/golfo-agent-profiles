@@ -22,6 +22,11 @@ The agent learns how the user wants things done: an instruction that should last
 - Choose `--kind` by what the instruction is: `rule` for a preference or a restriction, `skill` for a procedure of several steps, `nested` with `--paths` when it is only for some folders.
   - Pass `--key` with the key of the rule that already decides the same thing (`agent-ready rules list` shows them), so the learning edits that rule instead of adding another one.
 
+<!-- rule id=learning/personal-or-team -->
+- In an office (`agent-ready identity show` says `Collaboration: business`), record with `--scope personal` an instruction the user gives as their own taste («a mí me gusta…», «para mí…»), and without `--scope` one for everybody («en el estudio siempre…», a format or a procedure of the office).
+  - When it is not clear which of the two it is, ask once whether it is only for them or for the whole office, within the one scope question of the episode; without an answer, or when the question cannot be asked, record it with `--scope personal`.
+  - In a code repository (`Collaboration: software`) never pass `--scope personal`: everything learned is for the team.
+
 <!-- rule id=learning/apply-what-record-learns -->
 - When `record` answers `learn`, run `agent-ready learn apply <id>` in the same turn.
   - For a skill, first write it under `.agents/skills/<name>/SKILL.md` and pass `--skill .agents/skills/<name>`.

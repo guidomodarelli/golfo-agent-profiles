@@ -1,9 +1,13 @@
 {
   "schemaVersion": 1,
   "name": "golfo",
-  "version": "1.7.0",
-  "minEngine": "0.145.0",
+  "version": "1.8.0",
+  "minEngine": "0.147.0",
   "changes": [
+    {
+      "version": "1.8.0",
+      "summary": "Profile learning: en una oficina (preset business), el agente registra con --scope personal una instrucción que el usuario da como gusto propio y sin --scope una del estudio; si no está claro, lo pregunta dentro de la única pregunta de alcance del episodio y, sin respuesta, queda personal. En un repositorio de código todo es de equipo. Necesita golfo-agent-ready 0.147.0"
+    },
     {
       "version": "1.7.0",
       "summary": "Profile learning: un bloque de .gitattributes nombra los merge drivers de agent-ready para las rules, .agents/learning/candidates.json y .agents/learning/log.md, así dos personas que aprendieron rules distintas del mismo archivo se integran sin conflicto. Necesita golfo-agent-ready 0.145.0, cuyo apply registra los drivers en .git/config"

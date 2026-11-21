@@ -168,6 +168,31 @@
         }
       ],
       "control": "El mensaje de learn apply ya le dice al agente que no avise; el caso cuida que la rule de aviso no lo contradiga"
+    },
+    {
+      "id": "learning-personal-taste-in-an-office",
+      "description": "En una oficina, una preferencia que el usuario da como propia se registra con --scope personal, no para todo el estudio.",
+      "input": "Leé las rules del profile learning. Trabajás en el repo de un estudio contable; agent-ready identity show dice «Collaboration: business». Marta te escribe: «A mí me gusta que los informes terminen con un resumen de una línea, de ahora en más». ¿Con qué comando y flags lo registrás? Respondé desde las rules, sin ejecutar comandos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "learn record",
+          "description": "Lo registra con agent-ready learn record",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "--scope personal",
+          "description": "Es personal: --scope personal",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "--explicit",
+          "description": "«De ahora en más» lo hace explícito",
+          "critical": false
+        }
+      ]
     }
   ]
 }
