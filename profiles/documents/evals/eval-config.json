@@ -35,7 +35,7 @@
       "assertions": [
         {
           "type": "contains",
-          "value": "entradas/demanda-ruiz.md",
+          "value": "entradas/demanda-ruiz.pdf.md",
           "description": "Escribe el contenido del PDF en un Markdown al lado, con el mismo nombre",
           "critical": true
         },

@@ -16,8 +16,8 @@ The documents of the office (records, letters, reports) live in this repository 
   - It is an input, kept as it came: it is versioned once and stays as evidence of what was received.
 
 <!-- rule id=documents/extracted-markdown -->
-- Next to each uploaded PDF or Word file, write its content as a Markdown file with the same name, and work on that file.
-  - `acta-4512.pdf` gets `acta-4512.md`. If that Markdown already exists, work on it instead of extracting it again.
+- Next to each uploaded PDF or Word file, write its content as a Markdown file named after the whole name of the input, and work on that file.
+  - `acta-4512.pdf` gets `acta-4512.pdf.md`, and `acta-4512.docx` gets its own `acta-4512.docx.md`: two inputs never share one Markdown. If that Markdown already exists, work on it instead of extracting it again.
   - The `markdown-to-pdf` skill extracts a Word file; read a PDF yourself and transcribe it faithfully, marking with `[illegible]` what cannot be read.
 
 <!-- rule id=documents/duplicate-names -->

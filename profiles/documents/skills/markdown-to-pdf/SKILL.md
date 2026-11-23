@@ -34,22 +34,27 @@ Generate from the Markdown, never by editing an earlier output. Keep the same na
 
 ```bash
 mkdir -p output/actas
-pandoc actas/acta-4512.md -o output/actas/acta-4512.pdf --pdf-engine=typst
-pandoc actas/acta-4512.md -o output/actas/acta-4512.docx
+pandoc actas/acta-4512.md -o output/actas/acta-4512.pdf --pdf-engine=typst --resource-path=actas
+pandoc actas/acta-4512.md -o output/actas/acta-4512.docx --resource-path=actas
 ```
 
 - `output/` is ignored by Git. Never commit what is there and never move it out of `output/` to version it: any machine generates it again.
 - If pandoc fails, show the person its message in one line and fix the Markdown, not the output.
+- `--resource-path` is the folder of the Markdown: its images resolve from there.
 - Tell the person where the file is (`output/actas/acta-4512.pdf`).
 
 ## 3. Turn an uploaded Word file into Markdown
 
-A Word file someone uploaded is an input: never edit it. Write its text next to it, with the same name, and work on that Markdown:
+A Word file someone uploaded is an input: never edit it. Write its text next to it, named after the whole name of the input, and work on that Markdown:
 
 ```bash
-pandoc entradas/contrato-cliente.docx -t gfm -o entradas/contrato-cliente.md
+pandoc entradas/contrato-cliente.docx -t gfm --extract-media=entradas/contrato-cliente.docx.media \
+  -o entradas/contrato-cliente.docx.md
 ```
+
+- `--extract-media` takes the images out of the Word file into a folder of its own and points the Markdown to them, so they are still there when the document is generated again.
+- The name keeps the extension of the input (`.docx.md`): a PDF and a Word file with the same name never share one Markdown.
 
 - If the Markdown already exists, work on it instead of extracting it again: it may already have changes.
 - Read the result once: pandoc keeps the text, the headings, the lists and the tables, but drops what Markdown cannot hold (colors, fonts, comments). Mention what was lost if it matters for the document.
-- An uploaded PDF is not converted with pandoc: read it yourself and transcribe it to its `.md`, marking with `[illegible]` what cannot be read.
+- An uploaded PDF is not converted with pandoc: read it yourself and transcribe it to its `.pdf.md`, marking with `[illegible]` what cannot be read.
