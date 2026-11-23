@@ -41,7 +41,7 @@
         },
         {
           "type": "regex",
-          "pattern": "[Nn]o (edito|modifico|toco|cambio|renombro)[^.]{0,60}(PDF|pdf|original)|[Nn]unca (edito|modifico|toco)|(PDF|pdf|original)[^.]{0,80}(queda (como|igual)|no se (toca|edita|modifica))",
+          "pattern": "[Nn]o (lo )?(edito|modifico|toco|cambio|renombro)|[Nn]unca (lo )?(edito|modifico|toco)|[Nn]o se (edita|toca|modifica)|queda (tal )?como (lleg|vino)",
           "description": "No edita el PDF subido",
           "critical": true
         }
