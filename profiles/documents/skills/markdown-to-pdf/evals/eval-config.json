@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "skill": "markdown-to-pdf",
+  "description": "Evalúa la skill markdown-to-pdf: cómo se genera un PDF o un Word desde el Markdown de un documento de la oficina y cómo se pasa a Markdown un Word recibido.",
+  "test_cases": [
+    {
+      "id": "pdf-from-markdown-into-output",
+      "description": "El PDF de un acta se genera desde su Markdown con pandoc y typst, en output/, sin versionarlo.",
+      "input": "Usá la skill markdown-to-pdf. En el repo del estudio está actas/acta-4512.md y el cliente pide el acta en PDF. ¿Qué comandos corrés, dónde queda el PDF y lo commiteás? No ejecutes comandos ni escribas archivos: respondé con lo que harías.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "--pdf-engine=typst",
+          "description": "Genera el PDF con typst como motor de pandoc",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "output/actas/acta-4512.pdf",
+          "description": "Deja el PDF en output/ con el mismo nombre y la misma carpeta",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "[Nn]o (lo )?(commite|versiona|subo|agrego)|ignorad|[Nn]unca (lo )?(commite|versiona)",
+          "description": "Aclara que el PDF no se versiona",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "uploaded-word-to-markdown",
+      "description": "Un Word recibido no se edita: se extrae a un .md con el mismo nombre, al lado, con pandoc -t gfm, y se trabaja sobre ese.",
+      "input": "Usá la skill markdown-to-pdf. Me mandaron entradas/contrato-cliente.docx y necesito cambiar la cláusula de honorarios. ¿Cómo lo hacés? No ejecutes comandos ni escribas archivos: respondé con lo que harías.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "-t gfm",
+          "description": "Extrae el Word a Markdown con pandoc -t gfm",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "entradas/contrato-cliente.md",
+          "description": "Escribe el Markdown al lado del Word, con el mismo nombre",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "[Nn]o (edito|modifico|toco|cambio)[^.]{0,60}(\\.docx|Word|original)|[Nn]unca (edito|modifico|toco)|(\\.docx|Word|original)[^.]{0,80}(queda|se queda|no se (toca|edita|modifica))",
+          "description": "No edita el Word recibido",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "missing-tools-point-to-apply",
+      "description": "Sin pandoc ni typst en el PATH, no los instala por su cuenta: manda a correr agent-ready apply.",
+      "input": "Usá la skill markdown-to-pdf. Corrí `pandoc --version` y dice «command not found». ¿Qué hacés para generar el PDF del informe? No ejecutes comandos ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "agent-ready apply",
+          "description": "Manda a correr agent-ready apply, que instala las herramientas del profile",
+          "critical": true
+        },
+        {
+          "type": "not_contains_any",
+          "values": ["apt install", "apt-get install", "brew install", "winget install", "choco install"],
+          "description": "No instala pandoc por otro camino"
+        }
+      ]
+    }
+  ]
+}

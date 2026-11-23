@@ -1,0 +1,69 @@
+{
+  "schema_version": 2,
+  "skill": "documents-rules",
+  "description": "Evalúa las rules del profile documents: Markdown como fuente, salidas generadas en output/, entradas que no se editan, su Markdown extraído al lado y nombres repetidos.",
+  "test_cases": [
+    {
+      "id": "documents-change-the-markdown-not-the-pdf",
+      "description": "Para cambiar un PDF generado se cambia su Markdown y se genera de nuevo, nunca el PDF.",
+      "input": "Leé las rules del profile documents. En el repo del estudio están actas/acta-4512.md y output/actas/acta-4512.pdf. El usuario te pide: «en el PDF del acta corregí la fecha, dice 12 y es 21». ¿Qué archivo cambiás y qué hacés después? No ejecutes comandos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "actas/acta-4512.md",
+          "description": "Corrige la fecha en el Markdown",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(gener|regener)[a-z]*[^.]{0,80}(PDF|pdf)|markdown-to-pdf",
+          "description": "Vuelve a generar el PDF desde el Markdown",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "[Nn]o (edito|modifico|toco|cambio)[^.]{0,40}(PDF|pdf)|[Nn]unca (edito|modifico)[^.]{0,40}(PDF|pdf)|(PDF|pdf)[^.]{0,60}no se (edita|toca|modifica)",
+          "description": "Aclara que el PDF generado no se edita",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "documents-uploaded-pdf-gets-its-markdown",
+      "description": "Un PDF subido no se edita: se transcribe a un .md con el mismo nombre al lado y se trabaja sobre ese.",
+      "input": "Leé las rules del profile documents. Un cliente subió entradas/demanda-ruiz.pdf y te piden un resumen con observaciones para la audiencia. ¿Qué archivos creás o cambiás? No ejecutes comandos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "entradas/demanda-ruiz.md",
+          "description": "Escribe el contenido del PDF en un Markdown al lado, con el mismo nombre",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "[Nn]o (edito|modifico|toco|cambio|renombro)[^.]{0,60}(PDF|pdf|original)|[Nn]unca (edito|modifico|toco)|(PDF|pdf|original)[^.]{0,80}(queda (como|igual)|no se (toca|edita|modifica))",
+          "description": "No edita el PDF subido",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "documents-duplicate-name-keeps-both",
+      "description": "Un archivo con el nombre de uno que ya está se guarda con la fecha en el nombre, sin pisar el primero.",
+      "input": "Leé las rules del profile documents. Hoy es 2026-11-23. El cliente vuelve a mandar entradas/poder.pdf, con cambios, y ya hay un entradas/poder.pdf de la semana pasada. ¿Cómo lo guardás? No ejecutes comandos; respondé desde las rules.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "poder-2026-11-23.pdf",
+          "description": "Guarda el nuevo con la fecha en el nombre",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "[Nn]o (piso|reemplazo|sobrescribo|borro)|sin (pisar|reemplazar|sobrescribir)|conserv[a-z]* (los dos|ambos)|(los dos|ambos)",
+          "description": "Conserva el archivo anterior"
+        }
+      ]
+    }
+  ]
+}
