@@ -48,11 +48,12 @@ pandoc actas/acta-4512.md -o output/actas/acta-4512.docx --resource-path=actas
 A Word file someone uploaded is an input: never edit it. Write its text next to it, named after the whole name of the input, and work on that Markdown:
 
 ```bash
-pandoc entradas/contrato-cliente.docx -t gfm --extract-media=entradas/contrato-cliente.docx.media \
-  -o entradas/contrato-cliente.docx.md
+(cd entradas && pandoc contrato-cliente.docx -t gfm --extract-media=contrato-cliente.docx.media \
+  -o contrato-cliente.docx.md)
 ```
 
 - `--extract-media` takes the images out of the Word file into a folder of its own and points the Markdown to them, so they are still there when the document is generated again.
+- Run it from the folder of the Word file, as above: the Markdown then names its images relative to its own folder, which is where `--resource-path` looks for them when the document is generated.
 - The name keeps the extension of the input (`.docx.md`): a PDF and a Word file with the same name never share one Markdown.
 
 - If the Markdown already exists, work on it instead of extracting it again: it may already have changes.

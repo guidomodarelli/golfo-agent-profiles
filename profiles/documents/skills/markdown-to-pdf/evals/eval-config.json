@@ -41,13 +41,13 @@
         },
         {
           "type": "contains",
-          "value": "entradas/contrato-cliente.docx.md",
+          "value": "contrato-cliente.docx.md",
           "description": "Escribe el Markdown al lado del Word, con el mismo nombre",
           "critical": true
         },
         {
           "type": "regex",
-          "pattern": "[Nn]o (lo )?(edito|modifico|toco|cambio)|[Nn]unca (lo )?(edito|modifico|toco)|[Nn]o se (edita|toca|modifica)|(\\.docx|Word|original)[^.]{0,80}(queda|se queda)",
+          "pattern": "[Nn]o (lo )?(edito|modifico|toco|cambio)|[Nn]unca (lo |se )?(edito|modifico|toco|edita|modifica|toca)|[Nn]o se (edita|toca|modifica)|(\\.docx|Word|original)[^.]{0,80}(queda|se queda)",
           "description": "No edita el Word recibido",
           "critical": true
         }
