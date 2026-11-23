@@ -1,0 +1,9 @@
+# Documents generated from their Markdown: any machine generates them again (documents.md).
+output/
+
+# Temporary files of the office applications, and documents open or half saved.
+~$*
+.~lock.*#
+*.tmp
+.DS_Store
+Thumbs.db
