@@ -38,6 +38,16 @@ no declara nada lo usa siguiendo `main`. Para fijarlo a una versión, en `.agent
 | `profiles/<nombre>/` | Capabilities, con `agents-skeleton.md` en `software-development` |
 | `scripts/`, `tests/` | Chequeos del pack y su release |
 
+## Subagente o skill
+
+Un rol (abogado, contador, ventas) o una forma de trabajar es un profile con rules y skills. Un subagente
+(`agents/<nombre>.md`) se justifica solo por contexto aislado, permisos restringidos (`access: read-only`),
+una revisión independiente o paralelismo y otro modelo (`model-tier`). Para repartir una tarea entre varios,
+el profile aporta solo su roster (una tabla con el archivo `.agents/agents/<nombre>.md` de cada uno, como
+`react-review-pr`) y la capability `orchestration` aporta el procedimiento (`orchestrate-agents`), que corre en
+la sesión principal. El criterio completo y el mapeo de `access` y `model-tier` por provider están en
+`references/profile-packs.md` de agent-ready-setup («Subagente o skill» y «Cómo declarar un subagente»).
+
 ## Versiones
 
 Cada cambio al contenido sube `version` en `agent-ready-pack.json` y suma su entrada en `changes`. Al mergear a `main` se publica el tag `v<version>` con un release. Un tag publicado no se mueve.

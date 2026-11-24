@@ -1,6 +1,8 @@
 ---
 name: android-perf-analyzer
 description: Analiza cambios de Android en busca de problemas de performance como trabajo en el main thread, recomposiciones, leaks de memoria y costo de arranque. Usar al revisar performance de código Android.
+access: read-only
+model-tier: balanced
 ---
 
 # Performance Analyzer Agent — Android

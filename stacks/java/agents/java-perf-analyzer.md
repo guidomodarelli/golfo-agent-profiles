@@ -1,6 +1,8 @@
 ---
 name: java-perf-analyzer
 description: Analiza cambios de Java en busca de problemas de performance como JVM tuning, queries a base de datos y connection pools. Usar al revisar performance de código Java.
+access: read-only
+model-tier: balanced
 ---
 
 # Performance Analyzer Agent — Java

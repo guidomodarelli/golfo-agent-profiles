@@ -1,6 +1,7 @@
 ---
 name: react-security-scanner
 description: Escanea cambios de frontend en busca de vulnerabilidades de seguridad propias del stack SSR + React + TypeScript. Usar al revisar cambios por XSS, secrets, validación de input o llamadas outbound inseguras.
+model-tier: deep
 ---
 
 # Security Scanner Agent — React + TypeScript

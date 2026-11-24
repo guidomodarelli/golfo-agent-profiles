@@ -1,9 +1,13 @@
 {
   "schemaVersion": 1,
   "name": "golfo",
-  "version": "1.10.0",
-  "minEngine": "0.149.0",
+  "version": "1.11.0",
+  "minEngine": "0.158.0",
   "changes": [
+    {
+      "version": "1.11.0",
+      "summary": "Capability orchestration (opt-in): la skill orchestrate-agents reparte una tarea entre los subagentes del roster que aporta un profile y consolida un solo informe, en la sesión principal. Los agents de review declaran model-tier, y los que solo leen el código (perf y tests) access: read-only; a11y-reviewer, los security scanners y lint-reviewer no, porque usan un MCP o corren herramientas. pr-review-workflow es el caso de code review de ese procedimiento. Necesita golfo-agent-ready 0.158.0, que renderiza access y model-tier por provider"
+    },
     {
       "version": "1.10.0",
       "summary": "Every rule declares trigger: always_on in its frontmatter, so Antigravity loads it; Claude Code and Codex read the rules as before."
@@ -238,6 +242,11 @@
       "kind": "capability",
       "description": "Rules and a design skill for business flows on web and native clients.",
       "assets": "profiles/business-flows"
+    },
+    "orchestration": {
+      "kind": "capability",
+      "description": "Dispatch a task to the subagents of a roster that a profile provides and consolidate one report, in the main session: the orchestrate-agents skill.",
+      "assets": "profiles/orchestration"
     },
     "learning": {
       "kind": "capability",

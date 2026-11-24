@@ -1,6 +1,7 @@
 ---
 name: lint-reviewer
 description: Revisa cambios en busca de problemas de linting y type safety usando solo las reglas y scripts configurados en este proyecto (oxlint, Biome o ESLint). Usar al revisar calidad de código, errores de lint o tipado TypeScript.
+model-tier: fast
 ---
 
 # Lint Reviewer Agent — React

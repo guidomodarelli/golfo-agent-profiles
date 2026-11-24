@@ -1,6 +1,7 @@
 ---
 name: android-security-scanner
 description: Escanea cambios de Android en busca de vulnerabilidades de seguridad como secretos en el APK, componentes exportados, almacenamiento inseguro y dependencias vulnerables. Usar al revisar seguridad de código Android.
+model-tier: deep
 ---
 
 # Security Scanner Agent — Android

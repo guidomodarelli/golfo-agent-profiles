@@ -1,0 +1,98 @@
+{
+  "schema_version": 2,
+  "skill": "orchestrate-agents",
+  "description": "Evalúa el procedimiento genérico de orquestación: despachar al roster que aporta el profile, consolidar con contradicciones resueltas por evidencia y qué hacer sin roster.",
+  "test_cases": [
+    {
+      "id": "roster-with-missing-agent-and-contradiction",
+      "description": "Con roster: despacha en paralelo, no improvisa el subagente que falta y resuelve una contradicción con evidencia.",
+      "input": "Usando orchestrate-agents. El command `cierre-mensual` aporta este roster: `.agents/agents/tax-checker.md` (siempre), `.agents/agents/ledger-auditor.md` (siempre) y `.agents/agents/payroll-reviewer.md` (solo si hay sueldos). En `.agents/agents/` existen tax-checker.md y ledger-auditor.md, pero no payroll-reviewer.md, y este mes hay sueldos. tax-checker dice que el IVA del mes es 12.400 y ledger-auditor dice 12.040; el libro IVA ventas del mes suma 12.400. ¿Cómo orquestás y cómo queda el informe? No ejecutes herramientas ni escribas archivos; respondé desde la skill.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "payroll-reviewer",
+          "description": "Menciona el subagente que falta",
+          "critical": true
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "Not covered",
+            "No cubierto",
+            "Sin cubrir",
+            "no cubiert"
+          ],
+          "description": "Lo reporta como no cubierto en vez de improvisarlo",
+          "critical": true
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "paralelo",
+            "parallel"
+          ],
+          "description": "Despacha en paralelo los subagentes independientes",
+          "critical": false
+        },
+        {
+          "type": "contains",
+          "value": "12.400",
+          "description": "Resuelve la contradicción con el valor que respalda el libro IVA",
+          "critical": true
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "libro",
+            "evidencia",
+            "evidence"
+          ],
+          "description": "Justifica la resolución con la evidencia de la fuente",
+          "critical": false
+        }
+      ]
+    },
+    {
+      "id": "no-roster-asks-which-agents",
+      "description": "Sin roster: lista los subagentes y pregunta cuáles usar, sin despachar a todos.",
+      "control": "Sin la skill el modelo ya pregunta qué subagentes usar (3/3 con --baseline): guarda que la skill no lo empuje a despachar a todos.",
+      "input": "Usando orchestrate-agents. El usuario dice: \"revisá este contrato con los agentes\". Ningún command ni skill aportó un roster. En `.agents/agents/` hay contract-reviewer.md, tax-checker.md, ledger-auditor.md y a11y-reviewer.md. ¿Qué hacés antes de despachar? No ejecutes herramientas ni escribas archivos; respondé desde la skill.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "pregunt",
+            "ask",
+            "¿Cuál",
+            "¿cuál",
+            "¿Qué agentes",
+            "¿qué agentes"
+          ],
+          "description": "Le pregunta al usuario qué subagentes usar",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "contract-reviewer",
+          "description": "Ofrece los subagentes que encontró en .agents/agents/",
+          "critical": false
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "no despach",
+            "sin despachar",
+            "antes de despachar",
+            "no a todos",
+            "no los despacho a todos",
+            "no corro todos",
+            "not dispatch",
+            "do not dispatch"
+          ],
+          "description": "No despacha a todos los subagentes por defecto",
+          "critical": false
+        }
+      ]
+    }
+  ]
+}
