@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # API Validation Middleware Layout
 
 > **Applicability:** applies only when the project serves its API through Express (a BFF with `express.Router`) or the Pages Router (`getServerSideProps`). In Next.js App Router projects, use route handlers (`app/**/route.ts`) and validate at that boundary instead, following `react-security.md#input-validation` with the project's own boundary helpers; do not create `api/middlewares/validation/` or the Express factory below.

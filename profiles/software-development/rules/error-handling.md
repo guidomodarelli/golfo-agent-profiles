@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Error Handling
 
 Every failure must end in a deliberate outcome that someone can see and trace.

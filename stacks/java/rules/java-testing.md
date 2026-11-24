@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Testing Rules — Java
 
 <!-- rule id=java-testing/junit-5-assertion-library -->

@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Next.js App Router Rules
 
 Rules for projects that route with the Next.js App Router: a `next` dependency with routes under `app/` or `src/app/`. They add to the React and Next.js rules; for loading, error and layout boundaries, follow the project's Next.js documentation. What the routes directory holds and how its route handlers validate input are in the `AGENTS.md` of the routes directory (`app/AGENTS.md` or `src/app/AGENTS.md` by default): read it before you change a file there.

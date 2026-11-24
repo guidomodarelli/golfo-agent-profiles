@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Security Rules — React + TypeScript
 
 Baseline security rules for SSR React applications. These rules are always active and condition all code generation. The `react-security-scanner` agent uses this file as its baseline checklist and as supplementary context for the findings of any configured security tool.

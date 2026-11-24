@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Browser Before User Questions
 
 Before asking the user for information or manual browser work, check whether the active provider can retrieve it or complete the authorized task through an available browser capability. Apply this in Claude Code and Codex, across every stack.

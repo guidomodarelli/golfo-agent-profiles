@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Lodash Rules — SSR + React + TypeScript
 
 `lodash-es` is a mandatory dependency of this stack: every mandatory case below uses it. Use it only where it removes code the language cannot express as briefly; never as a wrapper around native features. Never use the CommonJS `lodash` package or its per-method subpaths (`lodash/debounce`).

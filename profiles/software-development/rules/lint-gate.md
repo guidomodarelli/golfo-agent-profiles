@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Lint Gate
 
 A task that adds or modifies files is not complete until applicable project lint validation succeeds.

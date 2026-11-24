@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Coding Style Rules — Node
 
 <!-- rule id=node-coding-style/follow-linter-formatter-project -->

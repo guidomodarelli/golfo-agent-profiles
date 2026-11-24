@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Hexagonal Architecture — Vertical Slices
 
 Applies to projects that organize business code in modules with `domain`, `application`, and `infrastructure` layers. Keep the boundaries from the first commit and in every change.

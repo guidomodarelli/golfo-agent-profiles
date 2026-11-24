@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Verify Changes
 
 Verify your work after each meaningful change instead of assuming it worked.

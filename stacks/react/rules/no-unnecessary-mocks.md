@@ -1,4 +1,5 @@
 ---
+trigger: always_on
 assumes:
   testRunner: vitest
 ---

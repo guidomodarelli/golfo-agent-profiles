@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Database Rules
 
 Applies to projects that talk to a relational database. If the project has no database, this rule does not apply.

@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Cross-Engine Compatibility — Chromium and WebKit
 
 Every style and every piece of client-side JavaScript must render and behave correctly on Chromium (Chrome, Edge, Android Chrome) and WebKit (Safari, iOS Safari, iOS Chrome, iOS WebViews). Verify on both engines when both are available; the managed browser tooling only installs Chromium, so see `Verification` for how to close a task when WebKit cannot be exercised.

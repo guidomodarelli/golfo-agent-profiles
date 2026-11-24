@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Environment Readiness
 
 A missing configuration value or an outdated local database must show up when the app starts, not as a server error in the middle of a flow.

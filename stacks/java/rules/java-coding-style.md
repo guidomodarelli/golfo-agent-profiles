@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Coding Style Rules — Java
 
 <!-- rule id=java-coding-style/follow-formatter-static-analysis -->

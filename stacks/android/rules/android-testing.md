@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Testing Rules — Android
 
 <!-- rule id=android-testing/put-tests-need-device -->

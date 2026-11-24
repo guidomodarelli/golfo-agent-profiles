@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # User Actions First
 
 When a long task is finished, or you are blocked and need the user to do something, start your response with what you need from them.

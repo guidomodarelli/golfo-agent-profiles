@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Server-First Data Flow
 
 Load data on the server by default and adapt external data in exactly one place.

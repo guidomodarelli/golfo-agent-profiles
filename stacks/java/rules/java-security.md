@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Security Rules — Java
 
 <!-- rule id=java-security/hardcode-secrets-tokens-credentials -->

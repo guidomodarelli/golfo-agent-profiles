@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Security Rules — Node
 
 <!-- rule id=node-security/hardcode-secrets-tokens-credentials -->
