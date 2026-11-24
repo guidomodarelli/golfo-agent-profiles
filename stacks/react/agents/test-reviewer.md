@@ -1,6 +1,8 @@
 ---
 name: test-reviewer
 description: Revisa cambios de producción de frontend y archivos de test por coverage y calidad, verificando que los tests validen comportamiento y no detalles de implementación. Usar al revisar o agregar tests.
+access: read-only
+model-tier: balanced
 ---
 
 # Test Reviewer Agent — React + TypeScript

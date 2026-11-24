@@ -1,6 +1,8 @@
 ---
 name: go-perf-analyzer
 description: Analiza cambios de Go en busca de problemas de performance como goroutine leaks, allocations excesivas e I/O ineficiente. Usar al revisar performance de código Go.
+access: read-only
+model-tier: balanced
 ---
 
 # Performance Analyzer Agent — Go

@@ -1,6 +1,8 @@
 ---
 name: a11y-reviewer
 description: Revisa cambios de frontend para cumplir WCAG 2.1 AA de accesibilidad usando la guía del design system del proyecto. Usar al revisar cambios de UI, componentes o markup en busca de problemas de accesibilidad.
+access: read-only
+model-tier: balanced
 ---
 
 # Accessibility Reviewer Agent — React

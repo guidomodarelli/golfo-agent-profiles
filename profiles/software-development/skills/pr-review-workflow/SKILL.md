@@ -3,13 +3,13 @@ name: pr-review-workflow
 description: Procedimiento común de review de PR para todos los stacks; obtiene el diff, corre el roster de agentes que declara el command `<stack>-review-pr` del stack y consolida un único reporte. Usar solo desde el `<stack>-review-pr` de un stack, que aporta el roster.
 license: MIT
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   tags: "review, pull-request, multi-provider"
 ---
 
 # PR Review Workflow
 
-Single source for the PR review procedure. Each stack's `<stack>-review-pr` command (`react-review-pr`, `node-review-pr`, ...) declares only its agent roster and its extra checks, then follows these steps. With several stacks, each command reviews with its own roster.
+Single source for the PR review procedure, the code review case of the generic orchestration procedure (`orchestrate-agents`, capability `orchestration`): same roster, dispatch and consolidation, with the diff as input and the report below. It keeps its own steps so a stack review works without that capability. Each stack's `<stack>-review-pr` command (`react-review-pr`, `node-review-pr`, ...) declares only its agent roster and its extra checks, then follows these steps. With several stacks, each command reviews with its own roster.
 
 ## 1. Get the diff
 
