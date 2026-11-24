@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # User-Facing Feedback Rules — SSR + React
 
 These rules apply when a critical or async action modifies, loads, or requests data: submit, search, navigation, edit, retry, or mutation. For user-facing copy wording, see `User-facing copy` in `react-style.md`.

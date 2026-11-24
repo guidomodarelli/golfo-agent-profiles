@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Testing Scope
 
 Write only tests that exercise behavior: what the product or a script observably does. A test that cannot fail when the behavior breaks is noise, and it slows every change.

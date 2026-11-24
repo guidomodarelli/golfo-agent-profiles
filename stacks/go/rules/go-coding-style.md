@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Coding Style Rules — Go
 
 <!-- rule id=go-coding-style/format-changed-file-gofmt -->

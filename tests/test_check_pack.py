@@ -181,6 +181,46 @@ class ApplyProblemsTest(unittest.TestCase):
         self.assertEqual(problems, [])
 
 
+def write_rule(root, relative_path, text):
+    path = os.path.join(root, relative_path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as rule_file:
+        rule_file.write(text)
+
+
+class RuleTriggerTest(unittest.TestCase):
+    def test_a_rule_with_a_valid_trigger_has_no_problems(self):
+        with tempfile.TemporaryDirectory() as root:
+            write_rule(root, "base/rules/always.md", "---\ntrigger: always_on\n---\n\n# Always\n")
+            write_rule(root, "stacks/node/rules/glob.md", '---\ntrigger: glob\nglobs: "*.ts, *.tsx"\n---\n# Glob\n')
+            self.assertEqual(check_pack.rule_trigger_problems(root), [])
+
+    def test_a_rule_without_a_trigger_or_with_an_unknown_one_is_reported(self):
+        with tempfile.TemporaryDirectory() as root:
+            write_rule(root, "base/rules/plain.md", "# No frontmatter\n")
+            write_rule(root, "profiles/acme/rules/camel.md", "---\ntrigger: alwaysOn\n---\n# Camel\n")
+            problems = check_pack.rule_trigger_problems(root)
+        self.assertEqual(len(problems), 2)
+        self.assertIn("base/rules/plain.md: has no trigger", problems[0])
+        self.assertIn("profiles/acme/rules/camel.md: has trigger 'alwaysOn'", problems[1])
+
+    def test_glob_and_model_decision_need_their_fields(self):
+        with tempfile.TemporaryDirectory() as root:
+            write_rule(root, "base/rules/glob.md", "---\ntrigger: glob\n---\n# Glob\n")
+            write_rule(root, "base/rules/decision.md", "---\ntrigger: model_decision\n---\n# Decision\n")
+            problems = check_pack.rule_trigger_problems(root)
+        self.assertTrue(any("decision.md: trigger model_decision needs a description" in problem for problem in problems))
+        self.assertTrue(any("glob.md: trigger glob needs globs" in problem for problem in problems))
+
+    def test_the_evals_of_the_rules_are_not_rules(self):
+        with tempfile.TemporaryDirectory() as root:
+            write_rule(root, "stacks/node/rules/evals/notes.md", "# Not a rule\n")
+            self.assertEqual(check_pack.rule_trigger_problems(root), [])
+
+    def test_the_rules_of_this_pack_declare_their_trigger(self):
+        self.assertEqual(check_pack.rule_trigger_problems(PACK_ROOT), [])
+
+
 def write_fake_engine(root, lint_result):
     """An engine whose CLI answers agent-ready rules lint with ``lint_result`` as its JSON."""
     os.makedirs(os.path.join(root, "engine", "scripts"))

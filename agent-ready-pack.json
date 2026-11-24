@@ -1,9 +1,13 @@
 {
   "schemaVersion": 1,
   "name": "golfo",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "minEngine": "0.149.0",
   "changes": [
+    {
+      "version": "1.10.0",
+      "summary": "Every rule declares trigger: always_on in its frontmatter, so Antigravity loads it; Claude Code and Codex read the rules as before."
+    },
     {
       "version": "1.9.0",
       "summary": "Capability documents: los documentos de una oficina son Markdown; el PDF o el Word se generan desde él en output/ (ignorado por Git) con la skill markdown-to-pdf y los CLIs pandoc y typst, y un PDF o Word subido es una entrada que no se edita, con su Markdown extraído al lado y la fecha en el nombre si se repite. Necesita golfo-agent-ready 0.149.0, que extrae los .tar.xz de typst"

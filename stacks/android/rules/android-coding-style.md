@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Coding Style Rules — Android
 
 <!-- rule id=android-coding-style/follow-formatter-static-analysis -->

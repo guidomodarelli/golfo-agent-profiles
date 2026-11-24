@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Security Rules — Android
 
 <!-- rule id=android-security/treat-everything-apk-public -->

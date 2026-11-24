@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Language Consistency
 
 Keep each file in a single language: the one it already uses.

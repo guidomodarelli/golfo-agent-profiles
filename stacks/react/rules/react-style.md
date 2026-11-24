@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # React Style Rules — React + TypeScript
 
 Coding conventions for this stack. Always consult the documentation of the project's framework and design system for their APIs before implementing — these rules cover conventions, not API details.

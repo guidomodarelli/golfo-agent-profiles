@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Learning from the User
 
 The agent learns how the user wants things done: an instruction that should last becomes a rule or a skill of this repository, so nobody has to repeat it. The agent decides from fixed rules of evidence, with `agent-ready learn` (references/learning.md of agent-ready-setup); the user never has to manage what is learned.

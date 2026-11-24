@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Established Libraries
 
 Prefer an established, well-maintained library over a custom implementation when it solves the need.

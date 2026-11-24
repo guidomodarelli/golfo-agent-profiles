@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Speculative Complexity Approval
 
 Before adding complexity for a speculative case, such as a hypothetical edge case or a remote or unlikely race condition or security advantage, explain it to the user and get their approval. Do not silently widen the scope for theoretical robustness.

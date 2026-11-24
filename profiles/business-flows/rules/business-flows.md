@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Business Flow Rules
 
 A business flow is the sequence of steps a user goes through to reach a business outcome, such as a checkout, an onboarding, or a claim. These rules apply to every client: web, Android, or any other. They do not apply to copy or styling changes that leave the steps untouched.

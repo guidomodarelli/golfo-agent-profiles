@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Memory with Engram
 
 Engram keeps the facts and the context of this project between sessions: who is who, the clients and the cases, what was decided in each one and what happened. It lives only on the machine of the user, under the project of this repository, and is never shared. How to work is not memory: a lasting instruction of the user becomes a rule or a skill of the repository through the learning (`learning.md`).

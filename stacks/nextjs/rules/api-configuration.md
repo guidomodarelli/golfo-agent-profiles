@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # API Configuration Rules
 
 How API endpoints and services receive upstream configuration such as scopes.

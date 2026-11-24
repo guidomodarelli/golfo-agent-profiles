@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Root Cause Bug Fixes
 
 When correcting an error, bug, crash, regression, or similar failure, diagnose and repair its cause before optimizing for speed, fewer lines, or a smaller diff. Simplicity is a criterion for choosing between fixes that address the cause; it does not justify leaving the faulty operation in place.

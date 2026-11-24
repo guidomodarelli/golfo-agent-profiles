@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Outbound Upstream Contract Rules
 
 These rules apply to payloads that server-side code (a route handler, server action, BFF, or infrastructure adapter) sends to an upstream endpoint, and to how that code consumes upstream responses. They are framework-neutral and complement the input-validation rules: an outbound request payload is not an upstream response and is not a public DTO of the server boundary.

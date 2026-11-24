@@ -2,7 +2,8 @@
 """Checks of the golfo content pack, for its CI and for whoever changes it.
 
 1. The catalog: agent-ready-pack.json with its version, its base and its profiles.
-2. The skills: each SKILL.md follows the Agent Skills specification.
+2. The skills and the rules: each SKILL.md follows the Agent Skills specification, and each rule declares
+   the trigger that Antigravity needs to load it.
 3. The version: a change to the content bumps the version and declares it in ``changes`` (with --base).
 4. The engine: with the agent-ready-setup skill of golfo-agent-ready (--engine), every profile applies in an
    empty repository that takes its content from this commit through ``sources.golfo``.
@@ -41,6 +42,13 @@ BLOCK_SCALAR_INDICATORS = (">", ">-", ">+", "|", "|-", "|+")
 QUOTES = "\"'"
 # In a plain YAML scalar, a colon followed by a space starts a mapping.
 MAPPING_INDICATOR = ": "
+# Antigravity loads a rule of .agents/rules/ only with one of these triggers in its frontmatter, and
+# drops the rest without a word. A glob rule names its patterns in globs; a model_decision one says
+# when it applies in description.
+RULES_DIRECTORY_NAME = "rules"
+RULE_TRIGGERS = ("always_on", "model_decision", "glob", "manual")
+TRIGGER_GLOB = "glob"
+TRIGGER_MODEL_DECISION = "model_decision"
 SEMVER_PATTERN = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 # The repository the consumers declare; the check reaches this checkout at that URL.
 PACK_URL = "https://github.com/guidomodarelli/golfo-agent-profiles"
@@ -172,6 +180,37 @@ def skill_problems(pack_dir):
             problems.append(f"{relative}: description is empty")
         elif len(description) > MAX_SKILL_DESCRIPTION_LENGTH:
             problems.append(f"{relative}: description has {len(description)} characters, more than {MAX_SKILL_DESCRIPTION_LENGTH}")
+    return problems
+
+
+def rule_files(pack_dir):
+    """The rule files of the pack: the Markdown under a rules/ directory of base/, a stack or a profile."""
+    for top in ("base", "stacks", "profiles"):
+        for directory, directory_names, file_names in os.walk(os.path.join(pack_dir, top)):
+            directory_names[:] = sorted(name for name in directory_names if name != EVALS_DIRECTORY_NAME)
+            if RULES_DIRECTORY_NAME not in os.path.relpath(directory, pack_dir).split(os.sep):
+                continue
+            for name in sorted(file_names):
+                if name.endswith(".md"):
+                    yield os.path.join(directory, name)
+
+
+def rule_trigger_problems(pack_dir):
+    """Each rule starts with a frontmatter whose trigger Antigravity accepts, with the fields that trigger needs."""
+    problems = []
+    for path in rule_files(pack_dir):
+        relative = os.path.relpath(path, pack_dir).replace(os.sep, "/")
+        with open(path, encoding="utf-8") as file_handle:
+            fields = frontmatter_fields(file_handle.read())
+        trigger = (fields or {}).get("trigger", "")
+        if trigger not in RULE_TRIGGERS:
+            found = f"trigger '{trigger}'" if trigger else "no trigger"
+            problems.append(f"{relative}: has {found}; Antigravity drops a rule without one of "
+                            f"{', '.join(RULE_TRIGGERS)} in its frontmatter")
+        elif trigger == TRIGGER_GLOB and not (fields.get("globs") or fields.get("glob")):
+            problems.append(f"{relative}: trigger glob needs globs with its patterns")
+        elif trigger == TRIGGER_MODEL_DECISION and not fields.get("description"):
+            problems.append(f"{relative}: trigger model_decision needs a description of when it applies")
     return problems
 
 
@@ -354,8 +393,8 @@ def main(argv=None, console=None):
         found = catalog_problems(arguments.pack, catalog)
         report(console, found)
         problems += found
-        console.step(2, total, "Skills")
-        found = skill_problems(arguments.pack)
+        console.step(2, total, "Skills and rules")
+        found = skill_problems(arguments.pack) + rule_trigger_problems(arguments.pack)
         report(console, found)
         problems += found
         for skill in skills_without_evals(arguments.pack):

@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Security Rules — Go
 
 <!-- rule id=go-security/hardcode-secrets-tokens-credentials -->

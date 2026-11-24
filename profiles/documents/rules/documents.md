@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Documents
 
 The documents of the office (records, letters, reports) live in this repository as Markdown, so several people can work on them and the sync of agent-ready merges their changes. A PDF or a Word file is either generated from that Markdown or an input someone uploaded; neither is ever edited.
