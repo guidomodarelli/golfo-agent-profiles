@@ -55,6 +55,7 @@
     {
       "id": "no-roster-asks-which-agents",
       "description": "Sin roster: lista los subagentes y pregunta cuáles usar, sin despachar a todos.",
+      "control": "Sin la skill el modelo ya pregunta qué subagentes usar (3/3 con --baseline): guarda que la skill no lo empuje a despachar a todos.",
       "input": "Usando orchestrate-agents. El usuario dice: \"revisá este contrato con los agentes\". Ningún command ni skill aportó un roster. En `.agents/agents/` hay contract-reviewer.md, tax-checker.md, ledger-auditor.md y a11y-reviewer.md. ¿Qué hacés antes de despachar? No ejecutes herramientas ni escribas archivos; respondé desde la skill.",
       "assertions": [
         {
