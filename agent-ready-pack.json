@@ -6,7 +6,7 @@
   "changes": [
     {
       "version": "1.11.0",
-      "summary": "Capability orchestration (opt-in): la skill orchestrate-agents reparte una tarea entre los subagentes del roster que aporta un profile y consolida un solo informe, en la sesión principal. Los agents de review declaran model-tier, y los que solo leen (perf, a11y, tests) access: read-only. pr-review-workflow es el caso de code review de ese procedimiento. Necesita golfo-agent-ready 0.158.0, que renderiza access y model-tier por provider"
+      "summary": "Capability orchestration (opt-in): la skill orchestrate-agents reparte una tarea entre los subagentes del roster que aporta un profile y consolida un solo informe, en la sesión principal. Los agents de review declaran model-tier, y los que solo leen el código (perf y tests) access: read-only; a11y-reviewer, los security scanners y lint-reviewer no, porque usan un MCP o corren herramientas. pr-review-workflow es el caso de code review de ese procedimiento. Necesita golfo-agent-ready 0.158.0, que renderiza access y model-tier por provider"
     },
     {
       "version": "1.10.0",
