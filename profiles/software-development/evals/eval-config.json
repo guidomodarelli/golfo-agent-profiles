@@ -238,6 +238,25 @@
         }
       ],
       "control": "Correr el spec e2e y no dar por terminado un cambio entre componentes con solo unitarios mockeados es lo que el modelo ya hace por defecto (3/3 sin las rules); el caso cuida que la rule no lo contradiga."
+    },
+    {
+      "id": "end-to-end-verification-covers-dependency-failure",
+      "description": "Al escribir el e2e de un cambio que cruza componentes, cubre además del camino feliz una falla del componente del otro lado y verifica lo que ve el usuario.",
+      "input": "Leé la rule end-to-end-verification.md. En una app web con Playwright, agregué un botón «Exportar» que llama a `POST /api/exports` y muestra el progreso hasta que el archivo está listo para bajar. Voy a escribir `e2e/exports.spec.ts`. Listame los escenarios que cubre el spec, con una línea por escenario y qué verifica cada uno. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "regex",
+          "pattern": "(falla|falle|error|500|5xx|timeout|tiempo de espera|se cae|caído|rechaz|malformad|inválid)[^.]{0,120}(api|endpoint|servidor|server|/api/exports|backend|respuesta|response)|(api|endpoint|servidor|server|/api/exports|backend)[^.]{0,120}(falla|falle|error|500|5xx|timeout|tiempo de espera|malformad)",
+          "description": "Cubre una falla del endpoint del otro lado",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(mensaje|aviso|alerta|muestra|ve el usuario|ver el error|toast|texto de error|botón (vuelve|queda|se habilita)|reintentar)",
+          "description": "Verifica lo que ve el usuario ante la falla",
+          "critical": true
+        }
+      ]
     }
   ]
 }

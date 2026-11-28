@@ -28,6 +28,11 @@ Unit tests isolate each part, so they cannot see defects in the boundaries betwe
   - Behavior that changes in the real environment: permissions, packaging, configuration.
   - Errors of one layer that never reach the user.
 
+<!-- rule id=end-to-end-verification/cover-failure-path -->
+- In the end-to-end run of a change that crosses components, cover at least one failure of the dependency the change talks to, not only the happy path.
+  - For example a request that fails, a timeout, or a malformed response from the other component.
+  - Assert what the user sees at the boundary of the system (the message, the state of the screen, the response), not only the internal call.
+
 <!-- rule id=end-to-end-verification/missing-e2e-harness -->
 - When the project has no end-to-end harness for a flow a change crosses, run the flow by hand in the real application, and report that the flow has no automated end-to-end coverage.
   - Do not add an end-to-end framework only to satisfy this rule: propose it to the user.

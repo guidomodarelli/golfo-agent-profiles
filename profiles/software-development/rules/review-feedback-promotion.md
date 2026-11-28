@@ -10,13 +10,14 @@ A review finding fixed once can come back in the next change. Every new kind of 
 
 <!-- rule id=review-feedback-promotion/new-kind-gets-check -->
 - When a review finds a kind of error that no automated check of the project covers yet, fix it and add, in the same change, an automated check that fails without the fix.
-  - The review can come from a person, a review bot (Codex, Claude) or the agent's own review.
+  - The review can come from a person, a review bot (Codex, Claude), the agent's own review, or a defect the user reports after the agent called the work done.
   - A kind of error is the general pattern, not the single line: «a handler that swallows a database error and answers 200», not «line 42 of `orders.ts`».
   - Except: a finding closed without changes (an unrealistic edge case, a pre-existing defect left out of scope, a non-blocking nit) gets no check.
 
 <!-- rule id=review-feedback-promotion/cheapest-check-that-fails -->
 - Choose the cheapest check that fails on the error, in this order: a lint rule, a regression test at the layer where the error shows (unit, integration or end-to-end), a pre-push or CI check.
   - An error that crosses components (an interface, state passed between layers, a resource lifetime, the real environment) needs an integration or end-to-end check: a unit test with mocks cannot see it.
+  - When the error depends on the shape of the input and the project already uses a property-based testing library, a property over generated inputs covers the whole kind of error; check that the generated cases are not mostly trivial (empty or one-element inputs).
   - When you add or change a lint rule, follow `lint-gate.md`.
   - A test follows `testing-scope.md`: a check that only reads committed files to match their text runs as a lint rule or a pre-push or CI script, not as a test file, unless the project's `AGENTS.md` requires that test.
 
