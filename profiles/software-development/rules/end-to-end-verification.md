@@ -18,7 +18,12 @@ Unit tests isolate each part, so they cannot see defects in the boundaries betwe
   - Report the skipped level, why it could not run, and what remains unverified, instead of reporting the change as done.
 
 <!-- rule id=end-to-end-verification/cross-component-defects -->
-- When a change crosses components, check through the end-to-end run the defects that unit tests miss: mismatched interfaces (paths, formats, names), state or progress that does not propagate between layers, resources that are not released (handles, connections, sockets), behavior that changes in the real environment (permissions, packaging, configuration), and errors of one layer that never reach the user.
+- When a change crosses components, check through the end-to-end run the defects that unit tests miss.
+  - Mismatched interfaces: paths, formats or names that each side reads differently.
+  - State or progress that does not propagate between layers.
+  - Resources that are not released: handles, connections, sockets.
+  - Behavior that changes in the real environment: permissions, packaging, configuration.
+  - Errors of one layer that never reach the user.
 
 <!-- rule id=end-to-end-verification/missing-e2e-harness -->
 - When the project has no end-to-end harness for a flow a change crosses, run the flow by hand in the real application, and report that the flow has no automated end-to-end coverage.
