@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "skill": "software-development-rules",
-  "description": "Evalúa las rules del profile software-development: una migración ya aplicada no se edita.",
+  "description": "Evalúa las rules del profile software-development: una migración ya aplicada no se edita. También: un tipo de error nuevo encontrado en una revisión se arregla con una verificación automatizada que falla sin el fix y se anota en el registro de hallazgos promovidos; un cambio que cruza componentes no se da por terminado solo con tests unitarios.",
   "test_cases": [
     {
       "id": "database-rule-refuses-editing-applied-migration",
@@ -156,6 +156,87 @@
         }
       ],
       "control": "Los arreglos (decimal para dinero, timestamps en UTC, status de error) son buena práctica común que el modelo ya sigue."
+    },
+    {
+      "id": "review-feedback-promotion-adds-check-and-registry-entry",
+      "description": "Ante un hallazgo de Codex de un tipo nuevo (un handler que traga el error de la base y responde 200), además del fix agrega una verificación automatizada que falla sin él y la anota en docs/review-findings.md.",
+      "input": "Leé la rule review-feedback-promotion.md. En un servicio Node con Postgres, Codex dejó este comentario en mi PR: «`POST /orders` atrapa el error de `orderRepository.insert` y responde 200 con `{ ok: false }`; el cliente cree que el pedido se guardó». Es la primera vez que aparece algo así en el repo; no hay ningún test ni regla de lint que lo cubra, y el `AGENTS.md` del proyecto no nombra un registro de hallazgos. Ya sé cómo arreglar el handler. ¿Qué más hacés en este mismo cambio antes de cerrar el comentario? Respondé con la lista de pasos, los archivos que tocás y la línea con la que cerrás el comentario. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "test de regresión",
+            "regression test",
+            "test de integración",
+            "integration test",
+            "regla de lint",
+            "lint rule"
+          ],
+          "description": "Agrega una verificación automatizada para ese tipo de error",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(falla|falle|fallar|fails?|failing|rojo|red)[^.]{0,80}(sin el fix|without the fix|antes del fix|before the fix|sin el arreglo|código viejo|old code)|(sin el fix|without the fix|antes del fix|before the fix)[^.]{0,60}(falla|falle|fails?|rojo|red)",
+          "description": "Comprueba que la verificación falla sin el fix",
+          "critical": true
+        },
+        {
+          "type": "contains",
+          "value": "docs/review-findings.md",
+          "description": "Lo anota en el registro por defecto de hallazgos promovidos",
+          "critical": true
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "Verificación",
+            "verificación que lo cubre",
+            "qué verificación",
+            "which check"
+          ],
+          "description": "Al cerrar el comentario dice qué verificación lo cubre"
+        }
+      ]
+    },
+    {
+      "id": "end-to-end-verification-cross-component-not-done-with-units",
+      "description": "Un cambio que cruza componentes (el formato de una ruta entre el cliente y el servidor) no se da por terminado con tests unitarios verdes: corre el flujo end-to-end o reporta el nivel que faltó.",
+      "input": "Leé la rule end-to-end-verification.md. En una app web, cambié el endpoint `GET /api/exports/:id` para que devuelva la ruta del archivo como URL absoluta en vez de relativa, y adapté el componente React que la usa para descargar el archivo. Los tests unitarios del endpoint y del componente pasan (el del componente mockea la respuesta del endpoint). El proyecto tiene Playwright con un spec `e2e/exports.spec.ts`. ¿Puedo dar el cambio por terminado? Respondé qué corrés y qué reportás. No ejecutes Bash ni escribas archivos.",
+      "assertions": [
+        {
+          "type": "contains_any",
+          "values": [
+            "e2e/exports.spec.ts",
+            "Playwright",
+            "end-to-end",
+            "e2e"
+          ],
+          "description": "Corre el flujo end-to-end afectado",
+          "critical": true
+        },
+        {
+          "type": "regex",
+          "pattern": "(no|todavía no|aún no|not yet|not)[^.]{0,40}(termin|done|listo|complet)|(termin|done|listo|complet)[^.]{0,40}(no|recién|solo cuando|only (when|after))",
+          "description": "No lo da por terminado solo con los tests unitarios",
+          "critical": true
+        },
+        {
+          "type": "contains_any",
+          "values": [
+            "mock",
+            "límite",
+            "boundary",
+            "contrato",
+            "contract",
+            "interfaz",
+            "interface",
+            "componentes",
+            "components"
+          ],
+          "description": "Explica que los unitarios con mock no ven el límite entre componentes"
+        }
+      ]
     }
   ]
 }
