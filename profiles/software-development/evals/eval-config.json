@@ -236,7 +236,8 @@
           ],
           "description": "Explica que los unitarios con mock no ven el límite entre componentes"
         }
-      ]
+      ],
+      "control": "Correr el spec e2e y no dar por terminado un cambio entre componentes con solo unitarios mockeados es lo que el modelo ya hace por defecto (3/3 sin las rules); el caso cuida que la rule no lo contradiga."
     }
   ]
 }
