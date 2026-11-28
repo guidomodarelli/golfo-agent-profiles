@@ -9,7 +9,10 @@ Unit tests isolate each part, so they cannot see defects in the boundaries betwe
 ## Levels of verification
 
 <!-- rule id=end-to-end-verification/levels-by-change -->
-- Verify each change at the levels its reach requires: unit tests for logic inside one module, integration tests for a module with its real dependencies (database, framework, another module), and an end-to-end run of the affected flow when the change crosses components.
+- Verify each change at every level its reach requires.
+  - Unit tests for logic inside one module.
+  - Integration tests for a module with its real dependencies (database, framework, another module).
+  - An end-to-end run of the affected flow when the change crosses components.
   - A change crosses components when it touches the contract or the data passed between two of them: a client and its server, a route and its service, a process and its worker, a migration and the code that reads the table, a producer and its consumer.
   - Choose the smallest command of each level, as `verify-changes.md` defines.
 
@@ -32,6 +35,7 @@ Unit tests isolate each part, so they cannot see defects in the boundaries betwe
 ## Executable constraints
 
 <!-- rule id=end-to-end-verification/constraints-executable -->
-- Turn each architecture constraint the project states (which layer may import which, where input is parsed, which module owns an external call) into an automated check: a lint rule, a dependency rule, or a pre-push or CI script.
+- Turn each architecture constraint the project states into an automated check: a lint rule, a dependency rule, or a pre-push or CI script.
+  - Constraints are, for example, which layer may import which, where input is parsed, or which module owns an external call.
   - A constraint that lives only in a document gets broken: agents copy the patterns they find in the code, the bad ones too.
   - Follow `review-feedback-promotion.md` for the check's failure message and for checks born from a review finding.
